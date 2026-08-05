@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Safety guide — HerSafe</title>
+<meta name="description" content="Practical safety guidance and emergency contacts." />
+<meta name="theme-color" content="#0e3d37" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="css/themes.css" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="guide">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span> HerSafe</a>
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html" data-page="home" data-i18n="nav.home">Home</a></li>
+        <li><a href="report.html" data-page="report" data-i18n="nav.report">Report Incident</a></li>
+        <li><a href="map.html" data-page="map" data-i18n="nav.map">Safety Map</a></li>
+        <li><a href="statistics.html" data-page="statistics" data-i18n="nav.statistics">Statistics</a></li>
+        <li><a href="guide.html" data-page="guide" data-i18n="nav.guide">Safety Guide</a></li>
+        <li><a href="about.html" data-page="about" data-i18n="nav.about">About</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" data-action="toggle-theme" aria-pressed="false" aria-label="Toggle dark mode"><span data-theme-icon>☀️</span></button>
+      <button class="icon-btn" data-action="toggle-lang" data-i18n="common.language" aria-label="Toggle language">العربية</button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="site-nav"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="container section">
+  <div class="section-head">
+    <h1 data-i18n="guide.title">Safety guide</h1>
+    <p data-i18n="guide.subtitle">Practical guidance and emergency numbers, organized by region.</p>
+  </div>
+
+  <section class="section" style="padding-block:0 32px">
+    <h2 data-i18n="guide.emergency_title">Emergency contacts</h2>
+    <p class="hint" data-i18n="guide.emergency_note">HerSafe currently covers Egypt only. These are official Egyptian emergency lines — confirm they're current before you rely on them.</p>
+    <div class="card-grid cols-3">
+      <div class="card"><strong data-i18n="guide.hotline_women">Anti-Harassment &amp; Violence Against Women Hotline</strong><p>15115</p></div>
+      <div class="card"><strong data-i18n="guide.hotline_unified">Unified emergency number</strong><p>112</p></div>
+      <div class="card"><strong data-i18n="guide.hotline_police">Police</strong><p>122</p></div>
+      <div class="card"><strong data-i18n="guide.hotline_ambulance">Ambulance</strong><p>123</p></div>
+      <div class="card"><strong data-i18n="guide.hotline_tourist_police">Tourist &amp; Antiquities Police</strong><p>126</p></div>
+      <div class="card"><strong data-i18n="guide.hotline_child">Child helpline</strong><p>16000</p></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-block:0 32px">
+    <h2 data-i18n="guide.tips_title">Everyday safety tips</h2>
+    <div class="card-grid cols-2">
+      <div class="card">Share your live location with someone you trust when traveling alone.</div>
+      <div class="card">Keep your phone charged and easily reachable, not buried in a bag.</div>
+      <div class="card">Trust your instincts — leaving a situation early is never overreacting.</div>
+      <div class="card">Note landmarks and well-lit routes in areas you visit often.</div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-block:0">
+    <h2 data-i18n="guide.faq_title">Frequently asked questions</h2>
+    <div class="card" style="margin-bottom:12px">
+      <strong>Is my report really anonymous?</strong>
+      <p>Yes. We never ask for your name, and reports are stored without any identifying information about you or the person involved.</p>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <strong>Can I name the person who harassed me?</strong>
+      <p>No. HerSafe is not a naming-and-shaming platform. Descriptions and evidence links must not include identifying details of any individual.</p>
+    </div>
+    <div class="card">
+      <strong>Who can see my evidence links?</strong>
+      <p>Only you control access to your Google Drive files. HerSafe stores the link text only — never the file itself.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-links">
+      <a href="privacy.html" data-i18n="nav.privacy">Privacy Policy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+    <p data-i18n="footer.rights">All community data is anonymous and aggregated.</p>
+  </div>
+</footer>
+
+<script src="js/theme.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

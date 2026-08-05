@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>About — HerSafe</title>
+<meta name="description" content="HerSafe's mission, vision, and privacy commitments." />
+<meta name="theme-color" content="#0e3d37" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="css/themes.css" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="about">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span> HerSafe</a>
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html" data-page="home" data-i18n="nav.home">Home</a></li>
+        <li><a href="report.html" data-page="report" data-i18n="nav.report">Report Incident</a></li>
+        <li><a href="map.html" data-page="map" data-i18n="nav.map">Safety Map</a></li>
+        <li><a href="statistics.html" data-page="statistics" data-i18n="nav.statistics">Statistics</a></li>
+        <li><a href="guide.html" data-page="guide" data-i18n="nav.guide">Safety Guide</a></li>
+        <li><a href="about.html" data-page="about" data-i18n="nav.about">About</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" data-action="toggle-theme" aria-pressed="false" aria-label="Toggle dark mode"><span data-theme-icon>☀️</span></button>
+      <button class="icon-btn" data-action="toggle-lang" data-i18n="common.language" aria-label="Toggle language">العربية</button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="site-nav"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="container section">
+  <div class="section-head"><h1 data-i18n="about.title">About HerSafe</h1></div>
+
+  <div class="card-grid cols-2">
+    <div class="card">
+      <h2 data-i18n="about.mission_title">Mission</h2>
+      <p data-i18n="about.mission_body">To make everyday harassment visible as a pattern, without exposing any individual — so communities and institutions can respond to what the data shows.</p>
+    </div>
+    <div class="card">
+      <h2 data-i18n="about.vision_title">Vision</h2>
+      <p data-i18n="about.vision_body">A world where reporting harassment costs nothing and prevents more of it.</p>
+    </div>
+    <div class="card">
+      <h2 data-i18n="about.privacy_title">Privacy by design</h2>
+      <p data-i18n="about.privacy_body">No accounts are required to report. We never publish names, photos, or identifying details. Read our full Privacy Policy for details.</p>
+    </div>
+    <div class="card">
+      <h2 data-i18n="about.opensource_title">Open source</h2>
+      <p data-i18n="about.opensource_body">HerSafe's code is open for review, audit, and contribution.</p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-links">
+      <a href="privacy.html" data-i18n="nav.privacy">Privacy Policy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+    <p data-i18n="footer.rights">All community data is anonymous and aggregated.</p>
+  </div>
+</footer>
+
+<script src="js/theme.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

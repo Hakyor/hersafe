@@ -1,0 +1,71 @@
+/*
+  HerSafe design tokens
+  Signature motif: the "Horizon Arc" — a soft protective arc of light,
+  used behind the hero, as a card corner glow, and as the pulse-ring
+  that marks anonymous / live indicators throughout the product.
+*/
+
+:root {
+  /* Brand */
+  --teal-900: #0e3d37;
+  --teal-700: #145a4f;
+  --teal-600: #1b6e62;
+  --teal-400: #4fa696;
+  --amber-500: #d9a24b;
+  --amber-400: #e8b96f;
+
+  /* Status (map + severity only, never brand) */
+  --status-safe: #3f9142;
+  --status-caution: #d9a531;
+  --status-risk: #c0392b;
+
+  /* Light theme */
+  --bg: #faf7f1;
+  --surface: #ffffff;
+  --surface-muted: #f1ece1;
+  --ink: #14231f;
+  --ink-soft: #4a5a55;
+  --border: #e4ddcd;
+  --accent: var(--amber-500);
+  --primary: var(--teal-700);
+  --primary-ink: #ffffff;
+  --shadow: 0 8px 24px -12px rgba(14, 61, 55, 0.25);
+  --shadow-sm: 0 2px 8px -4px rgba(14, 61, 55, 0.18);
+
+  /* Typography */
+  --font-display-en: "Fraunces", Georgia, serif;
+  --font-body-en: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display-ar: "Almarai", Tahoma, sans-serif;
+  --font-body-ar: "Cairo", Tahoma, sans-serif;
+
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --radius-sm: 8px;
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #081513;
+  --surface: #0f211d;
+  --surface-muted: #142823;
+  --ink: #edebe3;
+  --ink-soft: #a8b8b2;
+  --border: #1e3833;
+  --accent: var(--amber-400);
+  --primary: var(--teal-400);
+  --primary-ink: #06120f;
+  --shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.55);
+  --shadow-sm: 0 4px 14px -6px rgba(0, 0, 0, 0.45);
+  color-scheme: dark;
+}
+
+html[dir="rtl"] {
+  --font-display: var(--font-display-ar);
+  --font-body: var(--font-body-ar);
+}
+
+html[dir="ltr"] {
+  --font-display: var(--font-display-en);
+  --font-body: var(--font-body-en);
+}

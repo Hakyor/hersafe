@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Safety map — HerSafe</title>
+<meta name="description" content="Aggregated, anonymous community safety map." />
+<meta name="theme-color" content="#0e3d37" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="css/themes.css" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="map">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span> HerSafe</a>
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html" data-page="home" data-i18n="nav.home">Home</a></li>
+        <li><a href="report.html" data-page="report" data-i18n="nav.report">Report Incident</a></li>
+        <li><a href="map.html" data-page="map" data-i18n="nav.map">Safety Map</a></li>
+        <li><a href="statistics.html" data-page="statistics" data-i18n="nav.statistics">Statistics</a></li>
+        <li><a href="guide.html" data-page="guide" data-i18n="nav.guide">Safety Guide</a></li>
+        <li><a href="about.html" data-page="about" data-i18n="nav.about">About</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" data-action="toggle-theme" aria-pressed="false" aria-label="Toggle dark mode"><span data-theme-icon>☀️</span></button>
+      <button class="icon-btn" data-action="toggle-lang" data-i18n="common.language" aria-label="Toggle language">العربية</button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="site-nav"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="container section">
+  <div class="section-head">
+    <h1 data-i18n="map.title">Safety map</h1>
+    <p data-i18n="map.subtitle">Aggregated, anonymous incident density by area.</p>
+  </div>
+
+  <div class="map-filters">
+    <select id="filter-type" data-i18n-aria-label="map.filter_type">
+      <option value="">All types</option>
+      <option value="verbal_harassment" data-i18n="incident_types.verbal_harassment">Verbal harassment</option>
+      <option value="stalking" data-i18n="incident_types.stalking">Stalking / following</option>
+      <option value="physical" data-i18n="incident_types.physical">Physical contact</option>
+      <option value="catcalling" data-i18n="incident_types.catcalling">Catcalling</option>
+      <option value="online" data-i18n="incident_types.online">Online harassment</option>
+      <option value="unsafe_area" data-i18n="incident_types.unsafe_area">Unsafe area / poor lighting</option>
+      <option value="other" data-i18n="incident_types.other">Other</option>
+    </select>
+    <select id="filter-period" data-i18n-aria-label="map.filter_period">
+      <option value="all" data-i18n="map.period_all">All time</option>
+      <option value="month" data-i18n="map.period_month">Last 30 days</option>
+      <option value="year" data-i18n="map.period_year">Last 12 months</option>
+    </select>
+  </div>
+
+  <div class="map-legend">
+    <span><span class="legend-dot dot-safe"></span><span data-i18n="map.legend_safe">Safer</span></span>
+    <span><span class="legend-dot dot-caution"></span><span data-i18n="map.legend_caution">Use caution</span></span>
+    <span><span class="legend-dot dot-risk"></span><span data-i18n="map.legend_risk">Higher reports</span></span>
+  </div>
+
+  <div id="map" role="application" aria-label="Community safety map"></div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-links">
+      <a href="privacy.html" data-i18n="nav.privacy">Privacy Policy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+    <p data-i18n="footer.rights">All community data is anonymous and aggregated.</p>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/main.js"></script>
+<script src="js/map.js"></script>
+</body>
+</html>

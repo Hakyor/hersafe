@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Admin dashboard — HerSafe</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#0e3d37" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="css/themes.css" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="admin">
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span> HerSafe</a>
+    <div class="header-actions">
+      <button class="icon-btn" data-action="toggle-theme" aria-label="Toggle dark mode"><span data-theme-icon>☀️</span></button>
+      <button class="btn btn-ghost" id="admin-logout" data-i18n="admin.logout">Log out</button>
+    </div>
+  </div>
+</header>
+
+<main id="admin-dashboard" class="container section">
+  <h1 data-i18n="admin.dashboard_title">Admin dashboard</h1>
+
+  <div class="tabs" role="tablist">
+    <button class="tab-btn" role="tab" data-tab="reports" aria-selected="true" data-i18n="admin.reports_tab">Reports</button>
+    <button class="tab-btn" role="tab" data-tab="types" aria-selected="false" data-i18n="admin.types_tab">Incident types</button>
+    <button class="tab-btn" role="tab" data-tab="stats" aria-selected="false" data-i18n="admin.stats_tab">Statistics</button>
+  </div>
+
+  <div data-tab-panel="reports">
+    <div class="card table-wrap">
+      <table id="admin-reports-table">
+        <thead>
+          <tr><th>ID</th><th>Type</th><th>City</th><th>Created</th><th>Evidence</th><th></th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div data-tab-panel="types" hidden>
+    <div class="card">
+      <p class="hint">Manage the incident type list used across report forms, the map, and statistics. Types are stored in the <code>incident_types</code> table and edited via the Worker API.</p>
+      <ul>
+        <li>verbal_harassment</li>
+        <li>stalking</li>
+        <li>physical</li>
+        <li>catcalling</li>
+        <li>online</li>
+        <li>unsafe_area</li>
+        <li>other</li>
+      </ul>
+    </div>
+  </div>
+
+  <div data-tab-panel="stats" hidden>
+    <div class="card">
+      <p class="hint">Full breakdowns are available on the public <a href="statistics.html">Statistics</a> page, generated from the same aggregated endpoints.</p>
+    </div>
+  </div>
+</main>
+
+<script src="js/theme.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/main.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

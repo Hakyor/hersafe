@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Report an incident — HerSafe</title>
+<meta name="description" content="Report a harassment incident anonymously." />
+<meta name="theme-color" content="#0e3d37" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="css/themes.css" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="report">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span> HerSafe</a>
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html" data-page="home" data-i18n="nav.home">Home</a></li>
+        <li><a href="report.html" data-page="report" data-i18n="nav.report">Report Incident</a></li>
+        <li><a href="map.html" data-page="map" data-i18n="nav.map">Safety Map</a></li>
+        <li><a href="statistics.html" data-page="statistics" data-i18n="nav.statistics">Statistics</a></li>
+        <li><a href="guide.html" data-page="guide" data-i18n="nav.guide">Safety Guide</a></li>
+        <li><a href="about.html" data-page="about" data-i18n="nav.about">About</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" data-action="toggle-theme" aria-pressed="false" aria-label="Toggle dark mode"><span data-theme-icon>☀️</span></button>
+      <button class="icon-btn" data-action="toggle-lang" data-i18n="common.language" aria-label="Toggle language">العربية</button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="site-nav"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="container section">
+  <div id="report-form-wrap">
+    <div class="section-head">
+      <h1 data-i18n="report.title">Report an incident</h1>
+      <p data-i18n="report.subtitle">Every field except location is optional. Nothing here is ever made public with identifying details.</p>
+    </div>
+
+    <div class="notice" data-i18n="report.privacy_note">We never collect names, photos, or identifying details of any person involved. This report is anonymous by default.</div>
+    <div class="notice" data-i18n="report.service_area_notice">HerSafe currently covers Egypt only. If you're not in Egypt, this report can't be located on our map yet.</div>
+    <div class="notice notice-warning" data-i18n="report.hotline_notice">In immediate danger? Call 112, or the Anti-Harassment &amp; Violence Against Women hotline on 15115.</div>
+
+    <form id="report-form" novalidate>
+      <div class="field">
+        <label for="incident_type" data-i18n="report.field_type">Incident type</label>
+        <select id="incident_type" name="incident_type" required>
+          <option value="" data-i18n="report.field_type_placeholder">Select a type</option>
+          <option value="verbal_harassment" data-i18n="incident_types.verbal_harassment">Verbal harassment</option>
+          <option value="stalking" data-i18n="incident_types.stalking">Stalking / following</option>
+          <option value="physical" data-i18n="incident_types.physical">Physical contact</option>
+          <option value="catcalling" data-i18n="incident_types.catcalling">Catcalling</option>
+          <option value="online" data-i18n="incident_types.online">Online harassment</option>
+          <option value="unsafe_area" data-i18n="incident_types.unsafe_area">Unsafe area / poor lighting</option>
+          <option value="other" data-i18n="incident_types.other">Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="description" data-i18n="report.field_description">What happened</label>
+        <textarea id="description" name="description" maxlength="2000" data-i18n-placeholder="report.field_description_placeholder" placeholder="Describe the incident in your own words (no names, please)"></textarea>
+      </div>
+
+      <div class="flex gap-12 wrap">
+        <div class="field" style="flex:1 1 140px">
+          <label for="date" data-i18n="report.field_date">Date</label>
+          <input type="date" id="date" name="date" />
+        </div>
+        <div class="field" style="flex:1 1 140px">
+          <label for="time" data-i18n="report.field_time">Time</label>
+          <input type="time" id="time" name="time" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label data-i18n="report.field_location">Location</label>
+        <div class="flex gap-8 wrap" style="margin-bottom:10px">
+          <button type="button" class="btn btn-ghost" id="use-gps" data-i18n="report.use_gps">Use my current location</button>
+        </div>
+        <div id="picker-map" class="leaflet-map" role="application" aria-label="Map location picker"></div>
+        <input type="hidden" id="field-lat" />
+        <input type="hidden" id="field-lng" />
+        <input type="text" name="city" class="mt-0" style="margin-top:10px" placeholder="City / area name" />
+      </div>
+
+      <div class="field checkbox-row">
+        <input type="checkbox" id="anonymous" name="anonymous" checked />
+        <label for="anonymous" data-i18n="report.field_anonymous">Submit completely anonymously (recommended)</label>
+      </div>
+
+      <fieldset class="field" style="border:none;padding:0">
+        <legend style="font-weight:600;margin-bottom:6px" data-i18n="report.evidence_title">Evidence links (optional)</legend>
+        <p class="hint" data-i18n="report.evidence_body">Paste links to your own Google Drive files. We never host or copy your files.</p>
+        <div class="notice notice-warning" data-i18n="report.evidence_warning">Sharing Google Drive links is optional. Users are responsible for controlling access permissions to their own files.</div>
+        <div id="evidence-rows"></div>
+        <button type="button" class="btn btn-ghost" id="add-evidence-link" data-i18n="report.add_link">Add another link</button>
+      </fieldset>
+
+      <div id="form-error" class="notice notice-warning" role="alert"></div>
+
+      <button type="submit" class="btn btn-primary btn-block" data-i18n="report.submit">Submit report</button>
+    </form>
+  </div>
+
+  <div id="report-success" class="card center" hidden>
+    <h2 data-i18n="report.success_title">Report received</h2>
+    <p data-i18n="report.success_body">Thank you. Your report is anonymous and has been added to the community record.</p>
+    <a class="btn btn-primary" href="map.html" data-i18n="home.view_full_map">Open full map</a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-links">
+      <a href="privacy.html" data-i18n="nav.privacy">Privacy Policy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+    <p data-i18n="footer.rights">All community data is anonymous and aggregated.</p>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/main.js"></script>
+<script src="js/report.js"></script>
+</body>
+</html>

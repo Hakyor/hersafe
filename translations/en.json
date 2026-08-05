@@ -1,0 +1,158 @@
+{
+  "meta": {
+    "title": "HerSafe — Community Safety Platform",
+    "description": "Report harassment anonymously, explore community safety data, and stay informed with HerSafe."
+  },
+  "nav": {
+    "home": "Home",
+    "report": "Report Incident",
+    "map": "Safety Map",
+    "statistics": "Statistics",
+    "guide": "Safety Guide",
+    "about": "About",
+    "admin": "Admin",
+    "menu": "Menu"
+  },
+  "home": {
+    "hero_eyebrow": "Anonymous. Encrypted intent. Community-owned.",
+    "hero_title": "Your safety, witnessed without exposure.",
+    "hero_subtitle": "HerSafe lets you report harassment anonymously, see which areas your community marks safer, and help build a clearer, kinder map of the everyday.",
+    "service_badge": "Currently serving Egypt",
+    "cta_report": "Report an incident",
+    "cta_map": "View safety map",
+    "mission_title": "Why HerSafe exists",
+    "mission_body": "Most harassment goes unspoken because reporting feels exposing. HerSafe removes that cost — no names, no faces, no accusations. Just patterns the community can see and respond to.",
+    "stats_title": "At a glance",
+    "stats_reports": "Reports logged",
+    "stats_areas": "Areas mapped",
+    "stats_countries": "Countries active",
+    "tips_title": "Quick safety tips",
+    "recent_title": "Recent anonymous reports",
+    "recent_empty": "No reports yet in this area.",
+    "map_preview_title": "Community safety map",
+    "map_preview_body": "Green, amber, and red markers reflect aggregated, anonymous report density — never individual identities.",
+    "view_full_map": "Open full map"
+  },
+  "report": {
+    "title": "Report an incident",
+    "subtitle": "Every field except location is optional. Nothing here is ever made public with identifying details.",
+    "privacy_note": "We never collect names, photos, or identifying details of any person involved. This report is anonymous by default.",
+    "service_area_notice": "HerSafe currently covers Egypt only. If you're not in Egypt, this report can't be located on our map yet.",
+    "hotline_notice": "In immediate danger? Call 112, or the Anti-Harassment & Violence Against Women hotline on 15115.",
+    "error_outside_egypt": "This location looks like it's outside Egypt. HerSafe currently only maps incidents within Egypt.",
+    "field_type": "Incident type",
+    "field_type_placeholder": "Select a type",
+    "field_description": "What happened",
+    "field_description_placeholder": "Describe the incident in your own words (no names, please)",
+    "field_date": "Date",
+    "field_time": "Time",
+    "field_location": "Location",
+    "use_gps": "Use my current location",
+    "pick_on_map": "Pick location on map",
+    "field_anonymous": "Submit completely anonymously (recommended)",
+    "evidence_title": "Evidence links (optional)",
+    "evidence_body": "Paste links to your own Google Drive files. We never host or copy your files.",
+    "evidence_warning": "Sharing Google Drive links is optional. Users are responsible for controlling access permissions to their own files.",
+    "add_link": "Add another link",
+    "evidence_type": "Link type",
+    "evidence_url_placeholder": "https://drive.google.com/...",
+    "submit": "Submit report",
+    "submitting": "Submitting…",
+    "success_title": "Report received",
+    "success_body": "Thank you. Your report is anonymous and has been added to the community record.",
+    "error_generic": "Something went wrong. Please try again.",
+    "error_location": "We couldn't detect your location. You can still pick it on the map or type a city name."
+  },
+  "incident_types": {
+    "verbal_harassment": "Verbal harassment",
+    "stalking": "Stalking / following",
+    "physical": "Physical contact",
+    "catcalling": "Catcalling",
+    "online": "Online harassment",
+    "unsafe_area": "Unsafe area / poor lighting",
+    "other": "Other"
+  },
+  "map": {
+    "title": "Safety map",
+    "subtitle": "Aggregated, anonymous incident density by area.",
+    "legend_safe": "Safer",
+    "legend_caution": "Use caution",
+    "legend_risk": "Higher reports",
+    "filter_type": "Incident type",
+    "filter_period": "Time period",
+    "period_all": "All time",
+    "period_month": "Last 30 days",
+    "period_year": "Last 12 months",
+    "reports_count": "{count} anonymous reports here"
+  },
+  "statistics": {
+    "title": "Community statistics",
+    "subtitle": "Aggregated numbers only — never individual details.",
+    "by_area": "Reports by area",
+    "by_month": "Reports by month",
+    "by_type": "Reports by incident type",
+    "total_reports": "Total reports",
+    "no_data": "Not enough data yet for this view."
+  },
+  "guide": {
+    "title": "Safety guide",
+    "subtitle": "Practical guidance and emergency numbers, organized by region.",
+    "emergency_title": "Emergency contacts",
+    "emergency_note": "HerSafe currently covers Egypt only. These are official Egyptian emergency lines — confirm they're current before you rely on them.",
+    "hotline_women": "Anti-Harassment & Violence Against Women Hotline",
+    "hotline_unified": "Unified emergency number",
+    "hotline_police": "Police",
+    "hotline_ambulance": "Ambulance",
+    "hotline_tourist_police": "Tourist & Antiquities Police",
+    "hotline_child": "Child helpline",
+    "tips_title": "Everyday safety tips",
+    "faq_title": "Frequently asked questions"
+  },
+  "about": {
+    "title": "About HerSafe",
+    "mission_title": "Mission",
+    "mission_body": "To make everyday harassment visible as a pattern, without exposing any individual — so communities and institutions can respond to what the data shows.",
+    "vision_title": "Vision",
+    "vision_body": "A world where reporting harassment costs nothing and prevents more of it.",
+    "privacy_title": "Privacy by design",
+    "privacy_body": "No accounts are required to report. We never publish names, photos, or identifying details. Read our full Privacy Policy for details.",
+    "opensource_title": "Open source",
+    "opensource_body": "HerSafe's code is open for review, audit, and contribution."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "updated": "Last updated"
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "updated": "Last updated"
+  },
+  "admin": {
+    "login_title": "Admin login",
+    "username": "Username",
+    "password": "Password",
+    "login": "Sign in",
+    "dashboard_title": "Admin dashboard",
+    "logout": "Log out",
+    "reports_tab": "Reports",
+    "types_tab": "Incident types",
+    "stats_tab": "Statistics",
+    "delete": "Delete",
+    "confirm_delete": "Delete this report permanently?",
+    "no_reports": "No reports found."
+  },
+  "footer": {
+    "rights": "All community data is anonymous and aggregated.",
+    "made_with": "Built for communities, by communities."
+  },
+  "common": {
+    "loading": "Loading…",
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "back": "Back",
+    "language": "العربية",
+    "theme_light": "Light",
+    "theme_dark": "Dark"
+  }
+}

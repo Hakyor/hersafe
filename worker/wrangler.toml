@@ -1,0 +1,14 @@
+name = "hersafe-api"
+main = "src/index.js"
+compatibility_date = "2026-07-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "hersafe-db"
+database_id = "9837076f-8e63-4af9-a016-a2f9822f710d"
+
+[vars]
+ALLOWED_ORIGIN = "https://hakyor.github.io"
+
+# Set with: wrangler secret put TOKEN_SECRET
+# Do NOT put the real secret value in this file or commit it.

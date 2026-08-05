@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>HerSafe — Community Safety Platform</title>
+<meta name="description" content="Report harassment anonymously, explore community safety data, and stay informed with HerSafe." />
+<meta name="theme-color" content="#0e3d37" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+<meta property="og:title" content="HerSafe — Community Safety Platform" />
+<meta property="og:description" content="Anonymous harassment reporting and community safety awareness." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="assets/icons/og-cover.png" />
+<link rel="stylesheet" href="css/themes.css" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="home">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span> HerSafe</a>
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html" data-page="home" data-i18n="nav.home">Home</a></li>
+        <li><a href="report.html" data-page="report" data-i18n="nav.report">Report Incident</a></li>
+        <li><a href="map.html" data-page="map" data-i18n="nav.map">Safety Map</a></li>
+        <li><a href="statistics.html" data-page="statistics" data-i18n="nav.statistics">Statistics</a></li>
+        <li><a href="guide.html" data-page="guide" data-i18n="nav.guide">Safety Guide</a></li>
+        <li><a href="about.html" data-page="about" data-i18n="nav.about">About</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" data-action="toggle-theme" aria-pressed="false" aria-label="Toggle dark mode"><span data-theme-icon>☀️</span></button>
+      <button class="icon-btn" data-action="toggle-lang" data-i18n="common.language" aria-label="Toggle language">العربية</button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="site-nav">
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="container hero-inner">
+      <span class="eyebrow"><span class="pulse-dot" aria-hidden="true"></span> <span data-i18n="home.hero_eyebrow">Anonymous. Encrypted intent. Community-owned.</span></span>
+      <h1 data-i18n="home.hero_title">Your safety, witnessed without exposure.</h1>
+      <p data-i18n="home.hero_subtitle">HerSafe lets you report harassment anonymously, see which areas your community marks safer, and help build a clearer, kinder map of the everyday.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="report.html" data-i18n="home.cta_report">Report an incident</a>
+        <a class="btn btn-ghost" href="map.html" data-i18n="home.cta_map">View safety map</a>
+      </div>
+      <p class="hint" style="margin-top:14px" data-i18n="home.service_badge">Currently serving Egypt</p>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="section-head">
+      <h2 data-i18n="home.mission_title">Why HerSafe exists</h2>
+      <p data-i18n="home.mission_body">Most harassment goes unspoken because reporting feels exposing. HerSafe removes that cost — no names, no faces, no accusations. Just patterns the community can see and respond to.</p>
+    </div>
+  </section>
+
+  <section class="section container" data-home-stats>
+    <div class="section-head"><h2 data-i18n="home.stats_title">At a glance</h2></div>
+    <div class="card-grid cols-3">
+      <div class="card stat-card"><div class="stat-number" data-stat-reports>—</div><div class="stat-label" data-i18n="home.stats_reports">Reports logged</div></div>
+      <div class="card stat-card"><div class="stat-number" data-stat-areas>—</div><div class="stat-label" data-i18n="home.stats_areas">Areas mapped</div></div>
+      <div class="card stat-card"><div class="stat-number" data-stat-countries>—</div><div class="stat-label" data-i18n="home.stats_countries">Countries active</div></div>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="section-head"><h2 data-i18n="home.recent_title">Recent anonymous reports</h2></div>
+    <div class="card">
+      <ul data-recent-reports>
+        <li class="report-item" data-i18n="common.loading">Loading…</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="section-head">
+      <h2 data-i18n="home.map_preview_title">Community safety map</h2>
+      <p data-i18n="home.map_preview_body">Green, amber, and red markers reflect aggregated, anonymous report density — never individual identities.</p>
+    </div>
+    <div class="card">
+      <div class="map-legend">
+        <span><span class="legend-dot dot-safe"></span><span data-i18n="map.legend_safe">Safer</span></span>
+        <span><span class="legend-dot dot-caution"></span><span data-i18n="map.legend_caution">Use caution</span></span>
+        <span><span class="legend-dot dot-risk"></span><span data-i18n="map.legend_risk">Higher reports</span></span>
+      </div>
+      <a class="btn btn-accent" href="map.html" data-i18n="home.view_full_map">Open full map</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-links">
+      <a href="privacy.html" data-i18n="nav.privacy">Privacy Policy</a>
+      <a href="terms.html">Terms</a>
+      <a href="about.html" data-i18n="nav.about">About</a>
+      <a href="admin-login.html" data-i18n="nav.admin">Admin</a>
+    </div>
+    <p data-i18n="footer.rights">All community data is anonymous and aggregated.</p>
+  </div>
+</footer>
+
+<script src="js/theme.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
