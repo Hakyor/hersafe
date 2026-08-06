@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Safety — HerSafe</title>
+<meta name="description" content="Safe Places, street safety ratings, and community alerts." />
+<meta name="theme-color" content="#0e3d37" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="css/themes.css" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="safety">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span> HerSafe</a>
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html" data-page="home" data-i18n="nav.home">Home</a></li>
+        <li><a href="report.html" data-page="report" data-i18n="nav.report">Report Incident</a></li>
+        <li><a href="map.html" data-page="map" data-i18n="nav.map">Safety Map</a></li>
+        <li><a href="safety.html" data-page="safety" data-i18n="nav.safety">Safety</a></li>
+        <li><a href="statistics.html" data-page="statistics" data-i18n="nav.statistics">Statistics</a></li>
+        <li><a href="about.html" data-page="about" data-i18n="nav.about">About</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" data-action="toggle-theme" aria-label="Toggle dark mode"><span data-theme-icon>☀️</span></button>
+      <button class="icon-btn" data-action="toggle-lang" data-i18n="common.language" aria-label="Toggle language">العربية</button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="site-nav"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="container section">
+  <div class="section-head">
+    <h1 data-i18n="safe_places.title">Safe Places</h1>
+    <p data-i18n="safe_places.subtitle">Admin-verified places you can turn to nearby.</p>
+  </div>
+
+  <div class="flex gap-8 wrap" style="margin-bottom:16px">
+    <select id="safety-category-filter" data-i18n-aria-label="safe_places.filter_category">
+      <option value="" data-i18n="safe_places.all_categories">All categories</option>
+      <option value="police" data-i18n="categories.police">Police Station</option>
+      <option value="hospital" data-i18n="categories.hospital">Hospital</option>
+      <option value="pharmacy" data-i18n="categories.pharmacy">Pharmacy</option>
+      <option value="safe_shop" data-i18n="categories.safe_shop">Safe Shop</option>
+      <option value="university" data-i18n="categories.university">University</option>
+      <option value="security_point" data-i18n="categories.security_point">Public Security Point</option>
+      <option value="trusted_place" data-i18n="categories.trusted_place">Trusted Public Place</option>
+    </select>
+    <a class="btn btn-ghost" href="map.html" data-i18n="home.view_full_map">Open full map</a>
+  </div>
+
+  <div id="safe-places-list" class="card-grid cols-3">
+    <div class="card skeleton skeleton-card"></div>
+    <div class="card skeleton skeleton-card"></div>
+    <div class="card skeleton skeleton-card"></div>
+  </div>
+
+  <section class="section" style="padding-block:36px 0">
+    <div class="card-grid cols-3">
+      <a class="card" href="street-rating.html">
+        <h3 data-i18n="nav.rate_street">Rate a Street</h3>
+        <p data-i18n="street_rating.subtitle">Help others know how safe a street feels — even if nothing happened here.</p>
+      </a>
+      <a class="card" href="support.html">
+        <h3 data-i18n="nav.support">After Harassment</h3>
+        <p data-i18n="support.intro">There's no single right way to respond — these are calm, practical starting points.</p>
+      </a>
+      <a class="card" href="guide.html">
+        <h3 data-i18n="nav.guide">Safety Guide</h3>
+        <p data-i18n="guide.subtitle">Practical guidance and emergency numbers.</p>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-links">
+      <a href="privacy.html" data-i18n="nav.privacy">Privacy Policy</a>
+      <a href="terms.html" data-i18n="nav.terms">Terms</a>
+    </div>
+    <p data-i18n="footer.rights">All community data is anonymous and aggregated.</p>
+  </div>
+</footer>
+
+<script src="js/theme.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/main.js"></script>
+<script src="js/safety.js"></script>
+<script src="js/bottom-nav.js"></script>
+</body>
+</html>

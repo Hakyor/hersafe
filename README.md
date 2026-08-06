@@ -18,13 +18,29 @@ borders (see `EGYPT_BOUNDS` in `js/report.js`, `js/map.js`, and
 - Optional GPS or map-based location picker (Leaflet + OpenStreetMap)
 - Optional Google Drive evidence links (links only — files are never hosted)
 - Community safety map with green/amber/red aggregated markers
+- **Safe Places** — admin-curated police stations, hospitals, pharmacies,
+  and other trusted points, shown on the map with category icons
+- **Street Rating System** — anyone can rate a street on lighting, crowd
+  level, security presence, camera coverage, transit access, and general
+  feeling of safety; ratings roll up into a 0–100 Safety Score
+- **Safer Route planner** — choose shortest vs. safer routing, re-ranked
+  using street ratings and recent report density (via OSRM)
+- **Community Alerts** — anonymous, area-level warnings when multiple
+  reports land in the same place in a short window; never exposes report
+  content or identities
+- **"What to do after harassment"** support page — calm, practical
+  guidance, FAQs, evidence tips, and privacy advice
 - Aggregated statistics (by area, by month, by incident type)
-- Bilingual: Arabic (RTL) and English (LTR), switchable, JSON-driven — no
-  hardcoded UI strings
+- Bilingual: Arabic (RTL, default) and English (LTR), switchable,
+  JSON-driven — no hardcoded UI strings
 - Light and dark themes
-- Password-protected admin panel (view/delete reports)
+- Native-app-style mobile navigation: bottom tab bar with a center
+  "New Report" FAB and a slide-out drawer for secondary pages
+- Password-protected admin panel: reports, Safe Places CRUD, street
+  rating moderation, community alerts, and dashboard statistics
 - Mobile-first, responsive, accessible (keyboard nav, ARIA labels, focus
-  states, `prefers-reduced-motion` support)
+  states, skeleton loading states, `prefers-reduced-motion` support)
+- Scoped to Egypt only (adjustable via `EGYPT_BOUNDS` in the frontend and Worker)
 
 ## Tech stack
 
@@ -143,6 +159,13 @@ Schema changes go in new files under `sql/`, e.g. `sql/0002_add_column.sql`,
 and are applied with:
 ```bash
 wrangler d1 execute hersafe-db --file=./sql/0002_add_column.sql
+```
+
+This project already includes `sql/0002_features.sql`, which adds the
+`safe_places`, `street_ratings`, `community_alerts`, and `safe_routes_cache`
+tables for the features below. Apply it the same way:
+```bash
+wrangler d1 execute hersafe-db --remote --file=./sql/0002_features.sql --config=worker/wrangler.toml
 ```
 
 ## Configuration reference

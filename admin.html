@@ -8,6 +8,7 @@
 <meta name="theme-color" content="#0e3d37" />
 <link rel="manifest" href="manifest.json" />
 <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link rel="stylesheet" href="css/themes.css" />
 <link rel="stylesheet" href="css/styles.css" />
 </head>
@@ -27,7 +28,9 @@
 
   <div class="tabs" role="tablist">
     <button class="tab-btn" role="tab" data-tab="reports" aria-selected="true" data-i18n="admin.reports_tab">Reports</button>
-    <button class="tab-btn" role="tab" data-tab="types" aria-selected="false" data-i18n="admin.types_tab">Incident types</button>
+    <button class="tab-btn" role="tab" data-tab="places" aria-selected="false" data-i18n="admin.places_tab">Safe Places</button>
+    <button class="tab-btn" role="tab" data-tab="ratings" aria-selected="false" data-i18n="admin.ratings_tab">Street Ratings</button>
+    <button class="tab-btn" role="tab" data-tab="alerts" aria-selected="false" data-i18n="admin.alerts_tab">Alerts</button>
     <button class="tab-btn" role="tab" data-tab="stats" aria-selected="false" data-i18n="admin.stats_tab">Statistics</button>
   </div>
 
@@ -42,33 +45,98 @@
     </div>
   </div>
 
-  <div data-tab-panel="types" hidden>
-    <div class="card">
-      <p class="hint">Manage the incident type list used across report forms, the map, and statistics. Types are stored in the <code>incident_types</code> table and edited via the Worker API.</p>
-      <ul>
-        <li>verbal_harassment</li>
-        <li>stalking</li>
-        <li>physical</li>
-        <li>catcalling</li>
-        <li>online</li>
-        <li>unsafe_area</li>
-        <li>other</li>
-      </ul>
+  <div data-tab-panel="places" hidden>
+    <div class="card" style="margin-bottom:16px">
+      <h3 id="place-form-title" data-i18n="safe_places.add_new">Add Safe Place</h3>
+      <form id="place-form" novalidate>
+        <input type="hidden" id="place-id" />
+        <div class="field"><label for="place-name" data-i18n="safe_places.field_name">Name</label><input type="text" id="place-name" required /></div>
+        <div class="field">
+          <label for="place-category" data-i18n="safe_places.field_category">Category</label>
+          <select id="place-category" required>
+            <option value="police" data-i18n="categories.police">Police Station</option>
+            <option value="hospital" data-i18n="categories.hospital">Hospital</option>
+            <option value="pharmacy" data-i18n="categories.pharmacy">Pharmacy</option>
+            <option value="safe_shop" data-i18n="categories.safe_shop">Safe Shop</option>
+            <option value="university" data-i18n="categories.university">University</option>
+            <option value="security_point" data-i18n="categories.security_point">Public Security Point</option>
+            <option value="trusted_place" data-i18n="categories.trusted_place">Trusted Public Place</option>
+          </select>
+        </div>
+        <div class="field"><label for="place-description" data-i18n="safe_places.field_description">Description</label><textarea id="place-description"></textarea></div>
+        <div class="field">
+          <label data-i18n="safe_places.pick_location">Tap the map to set this place's location</label>
+          <div id="place-picker-map" class="leaflet-map"></div>
+          <div class="flex gap-8" style="margin-top:8px">
+            <input type="text" id="place-lat" placeholder="Latitude" readonly />
+            <input type="text" id="place-lng" placeholder="Longitude" readonly />
+          </div>
+        </div>
+        <div class="flex gap-12 wrap">
+          <div class="field" style="flex:1 1 160px"><label for="place-hours" data-i18n="safe_places.field_hours">Opening hours</label><input type="text" id="place-hours" /></div>
+          <div class="field" style="flex:1 1 160px"><label for="place-phone" data-i18n="safe_places.field_phone">Phone number</label><input type="text" id="place-phone" /></div>
+        </div>
+        <div class="field"><label for="place-image" data-i18n="safe_places.field_image">Image URL</label><input type="url" id="place-image" /></div>
+        <div class="field"><label for="place-notes" data-i18n="safe_places.field_notes">Safety notes</label><textarea id="place-notes"></textarea></div>
+        <div id="place-error" class="notice notice-warning" role="alert"></div>
+        <div class="flex gap-8">
+          <button type="submit" class="btn btn-primary" data-i18n="common.save">Save</button>
+          <button type="button" class="btn btn-ghost" id="place-form-reset" data-i18n="common.cancel">Cancel</button>
+        </div>
+      </form>
+    </div>
+    <div class="card table-wrap">
+      <table id="admin-places-table">
+        <thead><tr><th>ID</th><th>Name</th><th>Category</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div data-tab-panel="ratings" hidden>
+    <div class="card table-wrap">
+      <table id="admin-ratings-table">
+        <thead><tr><th>ID</th><th>Street</th><th>Score</th><th>Comment</th><th>Created</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div data-tab-panel="alerts" hidden>
+    <div class="card table-wrap">
+      <table id="admin-alerts-table">
+        <thead><tr><th>Area</th><th>City</th><th>Reports</th><th>Severity</th></tr></thead>
+        <tbody></tbody>
+      </table>
     </div>
   </div>
 
   <div data-tab-panel="stats" hidden>
-    <div class="card">
-      <p class="hint">Full breakdowns are available on the public <a href="statistics.html">Statistics</a> page, generated from the same aggregated endpoints.</p>
+    <div class="card-grid cols-3" id="admin-stats-cards">
+      <div class="card stat-card skeleton skeleton-card"></div>
+      <div class="card stat-card skeleton skeleton-card"></div>
+      <div class="card stat-card skeleton skeleton-card"></div>
+    </div>
+    <div class="card-grid cols-2">
+      <div class="card">
+        <h3>Riskiest streets</h3>
+        <div id="riskiest-streets"></div>
+      </div>
+      <div class="card">
+        <h3>Safest streets</h3>
+        <div id="safest-streets"></div>
+      </div>
     </div>
   </div>
 </main>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="js/theme.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
 <script src="js/main.js"></script>
 <script src="js/admin.js"></script>
+<script src="js/bottom-nav.js"></script>
 </body>
 </html>

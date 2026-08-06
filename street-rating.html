@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Rate a street — HerSafe</title>
+<meta name="description" content="Rate how safe a street feels for others in your community." />
+<meta name="theme-color" content="#0e3d37" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="css/themes.css" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="street-rating">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span> HerSafe</a>
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html" data-page="home" data-i18n="nav.home">Home</a></li>
+        <li><a href="report.html" data-page="report" data-i18n="nav.report">Report Incident</a></li>
+        <li><a href="map.html" data-page="map" data-i18n="nav.map">Safety Map</a></li>
+        <li><a href="safety.html" data-page="safety" data-i18n="nav.safety">Safety</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" data-action="toggle-theme" aria-label="Toggle dark mode"><span data-theme-icon>☀️</span></button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="site-nav"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="container section">
+  <div class="section-head">
+    <h1 data-i18n="street_rating.title">Rate this street</h1>
+    <p data-i18n="street_rating.subtitle">Help others know how safe a street feels — even if nothing happened here.</p>
+  </div>
+
+  <div class="field">
+    <label data-i18n="street_rating.field_location">Street location</label>
+    <div id="rating-picker-map" class="leaflet-map" role="application" aria-label="Map location picker"></div>
+  </div>
+
+  <div id="street-score-preview" class="card flex gap-12" style="align-items:center;margin-bottom:20px" hidden>
+    <div class="safety-score-badge" id="score-badge">
+      <span class="score-num" id="score-num">—</span>
+      <span class="score-max">/100</span>
+    </div>
+    <div>
+      <strong id="score-label"></strong>
+      <p class="hint" id="score-count"></p>
+    </div>
+  </div>
+
+  <form id="street-rating-form" novalidate>
+    <div id="rating-fields"></div>
+
+    <div class="field">
+      <label for="comment" data-i18n="street_rating.comment">Comment (optional)</label>
+      <textarea id="comment" name="comment" maxlength="500" data-i18n-placeholder="street_rating.comment_placeholder"></textarea>
+    </div>
+
+    <div id="rating-error" class="notice notice-warning" role="alert"></div>
+    <button type="submit" class="btn btn-primary btn-block" data-i18n="street_rating.submit">Submit rating</button>
+  </form>
+
+  <section class="section" style="padding-block:32px 0">
+    <h2 data-i18n="street_rating.history_title">Recent ratings</h2>
+    <div id="rating-history" class="card">
+      <p class="empty-state" data-i18n="street_rating.no_ratings">No ratings yet for this street. Be the first.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p data-i18n="footer.rights">All community data is anonymous and aggregated.</p>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/main.js"></script>
+<script src="js/street-rating.js"></script>
+<script src="js/bottom-nav.js"></script>
+</body>
+</html>

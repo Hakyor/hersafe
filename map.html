@@ -23,6 +23,7 @@
         <li><a href="index.html" data-page="home" data-i18n="nav.home">Home</a></li>
         <li><a href="report.html" data-page="report" data-i18n="nav.report">Report Incident</a></li>
         <li><a href="map.html" data-page="map" data-i18n="nav.map">Safety Map</a></li>
+        <li><a href="safety.html" data-page="safety" data-i18n="nav.safety">Safety</a></li>
         <li><a href="statistics.html" data-page="statistics" data-i18n="nav.statistics">Statistics</a></li>
         <li><a href="guide.html" data-page="guide" data-i18n="nav.guide">Safety Guide</a></li>
         <li><a href="about.html" data-page="about" data-i18n="nav.about">About</a></li>
@@ -40,6 +41,11 @@
   <div class="section-head">
     <h1 data-i18n="map.title">Safety map</h1>
     <p data-i18n="map.subtitle">Aggregated, anonymous incident density by area.</p>
+  </div>
+
+  <div id="alert-banner" class="alert-banner" hidden>
+    <span aria-hidden="true">⚠️</span>
+    <span data-i18n="alerts.banner_text">Several anonymous reports have recently been submitted in this area.</span>
   </div>
 
   <div class="map-filters">
@@ -60,6 +66,27 @@
     </select>
   </div>
 
+  <div class="flex gap-12 wrap" style="margin-bottom:14px">
+    <label class="flex gap-8" style="align-items:center">
+      <input type="checkbox" id="toggle-safe-places" />
+      <span data-i18n="safe_places.show_on_map">Show Safe Places on map</span>
+    </label>
+    <select id="filter-place-category" data-i18n-aria-label="safe_places.filter_category">
+      <option value="" data-i18n="safe_places.all_categories">All categories</option>
+      <option value="police" data-i18n="categories.police">Police Station</option>
+      <option value="hospital" data-i18n="categories.hospital">Hospital</option>
+      <option value="pharmacy" data-i18n="categories.pharmacy">Pharmacy</option>
+      <option value="safe_shop" data-i18n="categories.safe_shop">Safe Shop</option>
+      <option value="university" data-i18n="categories.university">University</option>
+      <option value="security_point" data-i18n="categories.security_point">Public Security Point</option>
+      <option value="trusted_place" data-i18n="categories.trusted_place">Trusted Public Place</option>
+    </select>
+    <label class="flex gap-8" style="align-items:center">
+      <input type="checkbox" id="toggle-street-ratings" />
+      <span data-i18n="street_rating.title">Street ratings</span>
+    </label>
+  </div>
+
   <div class="map-legend">
     <span><span class="legend-dot dot-safe"></span><span data-i18n="map.legend_safe">Safer</span></span>
     <span><span class="legend-dot dot-caution"></span><span data-i18n="map.legend_caution">Use caution</span></span>
@@ -67,6 +94,22 @@
   </div>
 
   <div id="map" role="application" aria-label="Community safety map"></div>
+
+  <div class="card" style="margin-top:20px">
+    <h2 data-i18n="route.title">Plan a route</h2>
+    <div class="route-panel">
+      <div class="route-mode-toggle">
+        <button type="button" data-route-mode="shortest" aria-pressed="true" data-i18n="route.shortest">Shortest route</button>
+        <button type="button" data-route-mode="safer" aria-pressed="false" data-i18n="route.safer">Safer route</button>
+      </div>
+      <div class="flex gap-8 wrap">
+        <button type="button" class="btn btn-ghost" id="route-set-start" data-i18n="route.set_start">Tap map to set start</button>
+        <button type="button" class="btn btn-ghost" id="route-set-end" data-i18n="route.set_end">Tap map to set destination</button>
+      </div>
+      <button type="button" class="btn btn-primary" id="route-find" data-i18n="route.find_route">Find route</button>
+      <div id="route-result" class="notice" hidden></div>
+    </div>
+  </div>
 </main>
 
 <footer class="site-footer">
@@ -86,5 +129,6 @@
 <script src="js/api.js"></script>
 <script src="js/main.js"></script>
 <script src="js/map.js"></script>
+<script src="js/bottom-nav.js"></script>
 </body>
 </html>

@@ -46,6 +46,27 @@
     isAdminAuthed: () => !!sessionStorage.getItem(TOKEN_KEY),
     getAdminReports: (query = "") => request("/admin/reports" + query, { auth: true }),
     deleteReport: (id) => request(`/admin/report/${id}`, { method: "DELETE", auth: true }),
+
+    // Safe Places
+    getSafePlaces: (query = "") => request("/safe-places" + query),
+    createSafePlace: (payload) => request("/safe-places", { method: "POST", body: payload, auth: true }),
+    updateSafePlace: (id, payload) => request(`/safe-places/${id}`, { method: "PUT", body: payload, auth: true }),
+    deleteSafePlace: (id) => request(`/safe-places/${id}`, { method: "DELETE", auth: true }),
+
+    // Street Ratings
+    getStreetRatings: (query = "") => request("/street-ratings" + query),
+    submitStreetRating: (payload) => request("/street-rating", { method: "POST", body: payload }),
+    getAdminStreetRatings: () => request("/admin/street-ratings", { auth: true }),
+    hideStreetRating: (id) => request(`/admin/street-rating/${id}`, { method: "DELETE", auth: true }),
+
+    // Community Alerts
+    getCommunityAlerts: () => request("/community-alerts"),
+
+    // Safer Route
+    getSaferRoute: (query = "") => request("/safe-route" + query),
+
+    // Admin dashboard
+    getAdminDashboardSummary: () => request("/admin/dashboard-summary", { auth: true }),
   };
 
   window.HerSafeAPI = HerSafeAPI;
