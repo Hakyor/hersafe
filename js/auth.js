@@ -72,6 +72,36 @@
  * (injected by bottom-nav.js) once both scripts have loaded.
  */
 (function () {
+  function injectHeaderAuthButton() {
+    document.querySelectorAll(".header-actions").forEach((actions) => {
+      if (actions.querySelector("[data-header-auth]")) return; // already injected
+      const link = document.createElement("a");
+      link.setAttribute("data-header-auth", "");
+      link.className = "btn btn-ghost";
+      link.style.cssText = "padding:8px 14px;min-height:auto;font-size:0.85rem;";
+      // Insert before the theme toggle so it reads first, left-to-right or
+      // right-to-left depending on the page direction.
+      const themeBtn = actions.querySelector("[data-action='toggle-theme']");
+      if (themeBtn) actions.insertBefore(link, themeBtn);
+      else actions.prepend(link);
+    });
+    refreshHeaderAuthButton();
+  }
+
+  function refreshHeaderAuthButton() {
+    const signedIn = window.HerSafeAPI && HerSafeAPI.isUserAuthed();
+    const user = signedIn ? HerSafeAPI.getStoredUser() : null;
+    document.querySelectorAll("[data-header-auth]").forEach((link) => {
+      if (signedIn && user) {
+        link.href = "profile.html";
+        link.textContent = "👤 " + user.name.split(" ")[0];
+      } else {
+        link.href = "auth.html";
+        link.textContent = HerSafeI18n && HerSafeI18n.t ? HerSafeI18n.t("auth.sign_in") : "Sign In";
+      }
+    });
+  }
+
   function applyAuthState() {
     const signedIn = window.HerSafeAPI && HerSafeAPI.isUserAuthed();
     const user = signedIn ? HerSafeAPI.getStoredUser() : null;
@@ -88,6 +118,8 @@
         window.location.reload();
       });
     });
+
+    injectHeaderAuthButton();
   }
 
   document.addEventListener("DOMContentLoaded", () => {

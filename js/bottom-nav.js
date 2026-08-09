@@ -56,8 +56,13 @@
     drawer.innerHTML = `
       <button class="icon-btn hs-drawer-close" id="hs-drawer-close" aria-label="Close menu">✕</button>
       <h2 data-i18n="nav.menu">Menu</h2>
-      <div data-auth-signed-in hidden style="padding:8px;margin-bottom:6px;border-bottom:1px solid var(--border)">
+      <div data-auth-signed-out style="margin-bottom:16px">
+        <a href="auth.html" class="btn btn-primary btn-block" data-i18n="auth.sign_in">Sign In</a>
+        <p class="hint center" style="margin-top:8px" data-i18n="auth.guest_note">You don't need an account to report incidents or rate streets — accounts just add a profile, points, and badges on top.</p>
+      </div>
+      <div data-auth-signed-in hidden style="padding:8px;margin-bottom:16px;border-bottom:1px solid var(--border)">
         <strong data-i18n="auth.signed_in_as">Signed in as</strong> <span data-auth-name></span>
+        <a href="profile.html" class="btn btn-ghost btn-block" style="margin-top:8px" data-i18n="nav.profile_page">My Profile</a>
       </div>
       <a href="index.html" data-i18n="nav.home">Home</a>
       <a href="report.html" data-i18n="nav.report">Report Incident</a>
@@ -74,11 +79,8 @@
       <a href="terms.html" data-i18n="nav.terms">Terms</a>
       <a href="admin-login.html" data-i18n="nav.admin">Admin</a>
       <hr style="border-color:var(--border);margin:12px 0" />
-      <a href="profile.html" data-auth-signed-in hidden data-i18n="nav.profile_page">My Profile</a>
       <a href="notifications.html" data-auth-signed-in hidden data-i18n="notifications.title">Notifications</a>
       <button type="button" class="hs-drawer-action" data-action="sign-out" data-auth-signed-in hidden data-i18n="auth.sign_out">Sign out</button>
-      <a href="auth.html" data-auth-signed-out data-i18n="auth.sign_in">Sign In</a>
-      <hr style="border-color:var(--border);margin:12px 0" />
       <button type="button" class="hs-drawer-action" data-action="toggle-lang" data-i18n="common.language">العربية</button>
       <button type="button" class="hs-drawer-action" data-action="toggle-theme">
         <span data-theme-icon>☀️</span> <span data-i18n="common.theme_light">Light</span> / <span data-i18n="common.theme_dark">Dark</span>
