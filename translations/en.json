@@ -160,7 +160,8 @@
   },
   "footer": {
     "rights": "All community data is anonymous and aggregated.",
-    "made_with": "Built for communities, by communities."
+    "made_with": "Built for communities, by communities.",
+    "legal": "Legal"
   },
   "common": {
     "loading": "Loading…",

@@ -8,40 +8,39 @@
   const YEAR = new Date().getFullYear();
 
   function buildFooter() {
+    const footerEl = document.querySelector(".site-footer");
     const container = document.querySelector(".site-footer .container");
     if (!container) return;
+    footerEl.classList.add("hs-footer");
 
+    // Two columns only — one "Contact" link lives in Legal, on purpose,
+    // so it never appears twice on the page.
     container.innerHTML = `
-      <div class="card-grid cols-3" style="margin-top:0">
-        <div>
+      <div class="hs-footer-grid">
+        <div class="hs-footer-col">
           <strong data-i18n="nav.menu">Menu</strong>
-          <div class="flex" style="flex-direction:column;gap:6px;margin-top:10px">
-            <a href="index.html" data-i18n="nav.home">Home</a>
-            <a href="map.html" data-i18n="nav.map">Safety Map</a>
-            <a href="safety.html" data-i18n="nav.safety">Safety</a>
-            <a href="statistics.html" data-i18n="nav.statistics">Statistics</a>
-          </div>
+          <a href="index.html" data-i18n="nav.home">Home</a>
+          <a href="map.html" data-i18n="nav.map">Safety Map</a>
+          <a href="safety.html" data-i18n="nav.safety">Safety</a>
+          <a href="statistics.html" data-i18n="nav.statistics">Statistics</a>
         </div>
-        <div>
-          <strong data-i18n="common.close">Legal</strong>
-          <div class="flex" style="flex-direction:column;gap:6px;margin-top:10px">
-            <a href="privacy.html" data-i18n="nav.privacy">Privacy Policy</a>
-            <a href="terms.html" data-i18n="nav.terms">Terms</a>
-            <a href="contact.html" data-i18n="nav.contact">Contact</a>
-          </div>
-        </div>
-        <div>
-          <strong data-i18n="contact.title">Contact</strong>
-          <div class="flex" style="flex-direction:column;gap:6px;margin-top:10px">
-            <a href="https://github.com/Hakyor/hersafe" target="_blank" rel="noopener">GitHub</a>
-            <a href="https://hakyor.github.io/Hamzaforwebsits/" target="_blank" rel="noopener" data-i18n="contact.portfolio">Portfolio</a>
-            <a href="https://instagram.com/elekiaby_moza" target="_blank" rel="noopener" data-i18n="contact.instagram">Instagram</a>
-          </div>
+        <div class="hs-footer-col">
+          <strong data-i18n="footer.legal">Legal</strong>
+          <a href="privacy.html" data-i18n="nav.privacy">Privacy Policy</a>
+          <a href="terms.html" data-i18n="nav.terms">Terms</a>
+          <a href="contact.html" data-i18n="nav.contact">Contact</a>
         </div>
       </div>
-      <hr style="border-color:var(--border);margin:18px 0" />
-      <p data-i18n="footer.rights">All community data is anonymous and aggregated.</p>
-      <p class="hint">© ${YEAR} Hamza Elekiaby — HerSafe</p>
+      <div class="hs-footer-social">
+        <a href="https://github.com/Hakyor/hersafe" target="_blank" rel="noopener">GitHub</a>
+        <span aria-hidden="true">·</span>
+        <a href="https://hakyor.github.io/Hamzaforwebsits/" target="_blank" rel="noopener" data-i18n="contact.portfolio">Portfolio</a>
+        <span aria-hidden="true">·</span>
+        <a href="https://instagram.com/elekiaby_moza" target="_blank" rel="noopener" data-i18n="contact.instagram">Instagram</a>
+      </div>
+      <hr class="hs-footer-divider" />
+      <p class="hint center" data-i18n="footer.rights">All community data is anonymous and aggregated.</p>
+      <p class="hint center">© ${YEAR} Hamza Elekiaby — HerSafe</p>
     `;
 
     if (window.HERSAFE_DICT) {

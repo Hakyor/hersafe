@@ -19,20 +19,8 @@
     }
   }
 
-  function showToast(message) {
-    let toast = document.querySelector(".toast");
-    if (!toast) {
-      toast = document.createElement("div");
-      toast.className = "toast";
-      toast.setAttribute("role", "status");
-      document.body.appendChild(toast);
-    }
-    toast.textContent = message;
-    requestAnimationFrame(() => toast.classList.add("show"));
-    clearTimeout(toast._timer);
-    toast._timer = setTimeout(() => toast.classList.remove("show"), 3500);
-  }
-  window.HerSafeToast = showToast;
+  // Toast function now lives in js/toast.js (loaded on every page) so it's
+  // always available regardless of which other scripts a page includes.
 
   async function loadHomeStats() {
     const el = document.querySelector("[data-home-stats]");

@@ -86,8 +86,13 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     setLang(detectLang());
-    document.querySelectorAll("[data-action='toggle-lang']").forEach((btn) => {
-      btn.addEventListener("click", toggleLang);
-    });
+  });
+
+  // Event delegation instead of querySelectorAll+addEventListener: this
+  // works even for buttons injected later (e.g. the mobile drawer, added
+  // by bottom-nav.js after this file's own DOMContentLoaded already ran),
+  // and can't silently stop working if script load order ever changes.
+  document.addEventListener("click", (e) => {
+    if (e.target.closest("[data-action='toggle-lang']")) toggleLang();
   });
 })();

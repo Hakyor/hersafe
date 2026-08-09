@@ -344,8 +344,29 @@ body.hs-has-bottom-nav main, body.hs-has-bottom-nav .site-footer { padding-botto
 .empty-state .empty-icon { font-size: 2rem; margin-bottom: 8px; }
 
 /* =====================================================================
-   Safe Places + alerts + route planner
+   Footer
    ===================================================================== */
+.hs-footer-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  margin-bottom: 18px;
+}
+.hs-footer-col { display: flex; flex-direction: column; gap: 8px; font-size: 0.88rem; }
+.hs-footer-col strong { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-soft); margin-bottom: 2px; }
+.hs-footer-col a { color: var(--ink); }
+.hs-footer-col a:hover { color: var(--primary); }
+.hs-footer-social {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  flex-wrap: wrap; font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 14px;
+}
+.hs-footer-social a { color: var(--ink-soft); }
+.hs-footer-social a:hover { color: var(--primary); }
+.hs-footer-divider { border: none; border-top: 1px solid var(--border); margin: 0 0 14px; }
+.site-footer.hs-footer p { margin-bottom: 4px; font-size: 0.82rem; }
+
+@media (max-width: 420px) {
+  .hs-footer-grid { gap: 14px; }
+  .hs-footer-col { font-size: 0.84rem; }
+}
 .category-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 0.78rem; font-weight: 600; background: var(--surface-muted); }
 .route-panel { display: flex; flex-direction: column; gap: 10px; }
 .route-mode-toggle { display: flex; gap: 8px; }

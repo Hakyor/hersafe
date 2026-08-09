@@ -21,6 +21,7 @@
   const activeTab = TAB_FOR_PAGE[page] || "";
 
   function buildBottomNav() {
+    if (document.querySelector(".hs-bottom-nav")) return; // never inject twice
     const nav = document.createElement("nav");
     nav.className = "hs-bottom-nav";
     nav.setAttribute("aria-label", "Primary");
@@ -44,6 +45,7 @@
   }
 
   function buildDrawer() {
+    if (document.getElementById("hs-drawer")) return; // never inject twice
     const overlay = document.createElement("div");
     overlay.className = "hs-drawer-overlay";
     overlay.id = "hs-drawer-overlay";
@@ -90,30 +92,36 @@
     document.body.appendChild(overlay);
     document.body.appendChild(drawer);
 
-    function openDrawer() {
-      overlay.classList.add("open");
-      drawer.classList.add("open");
-    }
-    function closeDrawer() {
-      overlay.classList.remove("open");
-      drawer.classList.remove("open");
-    }
-
-    document.getElementById("hs-profile-btn")?.addEventListener("click", openDrawer);
-    document.getElementById("hs-drawer-close")?.addEventListener("click", closeDrawer);
-    overlay.addEventListener("click", closeDrawer);
-    drawer.querySelectorAll("a").forEach((a) => a.addEventListener("click", closeDrawer));
-
     // Re-apply translations to the newly injected drawer/nav if i18n already ran.
     if (window.HERSAFE_DICT) {
       document.dispatchEvent(new CustomEvent("hersafe:i18n-ready", { detail: { dict: window.HERSAFE_DICT } }));
     }
   }
 
+  // Event delegation for everything below: attached once on `document`, so
+  // it works regardless of when the bottom nav / drawer get injected, and
+  // survives even if this script accidentally runs more than once (the
+  // buildBottomNav/buildDrawer guards above stop duplicate DOM, but a
+  // delegated listener needs no matching element to exist at attach-time
+  // in the first place — this is what actually fixes taps not registering).
+  document.addEventListener("click", (e) => {
+    const overlay = document.getElementById("hs-drawer-overlay");
+    const drawer = document.getElementById("hs-drawer");
+    if (!overlay || !drawer) return;
+
+    if (e.target.closest("#hs-profile-btn")) {
+      overlay.classList.add("open");
+      drawer.classList.add("open");
+      return;
+    }
+    if (e.target.closest("#hs-drawer-close") || e.target === overlay || e.target.closest("#hs-drawer a")) {
+      overlay.classList.remove("open");
+      drawer.classList.remove("open");
+    }
+  });
+
   document.addEventListener("DOMContentLoaded", () => {
     buildBottomNav();
     buildDrawer();
-    // If i18n runs after us, its own DOMContentLoaded listener will still
-    // catch these new [data-i18n] nodes since it queries the whole document.
   });
 })();

@@ -8,7 +8,7 @@ database_name = "hersafe-db"
 database_id = "9837076f-8e63-4af9-a016-a2f9822f710d"
 
 [vars]
-ALLOWED_ORIGIN = "https://hakyor.github.io"
+ALLOWED_ORIGIN = "https://yourusername.github.io"
 
 # Set with: wrangler secret put TOKEN_SECRET
 # Do NOT put the real secret value in this file or commit it.

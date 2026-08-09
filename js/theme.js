@@ -29,9 +29,9 @@
 
   apply(detect());
 
-  document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll("[data-action='toggle-theme']").forEach((btn) => {
-      btn.addEventListener("click", toggle);
-    });
+  // Event delegation: works for buttons injected later (drawer, header
+  // chip) regardless of script load order — same reasoning as i18n.js.
+  document.addEventListener("click", (e) => {
+    if (e.target.closest("[data-action='toggle-theme']")) toggle();
   });
 })();
