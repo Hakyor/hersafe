@@ -5,7 +5,7 @@ compatibility_date = "2026-07-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "hersafe-db"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "9837076f-8e63-4af9-a016-a2f9822f710d"
 
 [vars]
 # Must exactly match your GitHub Pages origin (scheme + host, no trailing
