@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Leaderboard — HerSafe</title>
+<meta name="description" content="Top community contributors on HerSafe." />
+<meta name="theme-color" content="#0e3d37" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="css/themes.css" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="leaderboard">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span> HerSafe</a>
+    <div class="header-actions">
+      <button class="icon-btn" data-action="toggle-theme" aria-label="Toggle dark mode"><span data-theme-icon>☀️</span></button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="container section" style="max-width:560px">
+  <div class="section-head">
+    <h1 data-i18n="profile.points">Points</h1>
+    <p class="hint">Top community contributors</p>
+  </div>
+  <div id="leaderboard-list" class="card">
+    <div class="skeleton skeleton-line"></div>
+    <div class="skeleton skeleton-line short"></div>
+  </div>
+</main>
+
+<script src="js/theme.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const list = document.getElementById("leaderboard-list");
+  try {
+    const rows = await HerSafeAPI.getLeaderboard();
+    if (!rows.length) {
+      list.innerHTML = `<p class="empty-state" data-i18n="common.no_results">Nothing here yet.</p>`;
+      return;
+    }
+    const medals = ["🥇", "🥈", "🥉"];
+    list.innerHTML = rows
+      .map((r, i) => `
+        <div class="rating-row">
+          <span>${medals[i] || (i + 1) + "."} ${r.name}</span>
+          <strong>${r.points} pts</strong>
+        </div>`)
+      .join("");
+  } catch (err) {
+    list.innerHTML = `<p class="empty-state">${err.message}</p>`;
+  }
+});
+</script>
+<script src="js/site-footer.js"></script>
+<script src="js/bottom-nav.js"></script>
+</body>
+</html>

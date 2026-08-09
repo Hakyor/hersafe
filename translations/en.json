@@ -17,7 +17,10 @@
     "rate_street": "Rate a Street",
     "support": "After Harassment",
     "terms": "Terms",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "contact": "Contact",
+    "profile_page": "My Profile",
+    "leaderboard": "Leaderboard"
   },
   "home": {
     "hero_eyebrow": "Anonymous. Encrypted intent. Community-owned.",
@@ -276,5 +279,100 @@
     "faq3_q": "Is this page legal advice?",
     "faq3_a": "No — this is general, supportive information, not legal advice specific to any country. For legal questions, consider consulting a local lawyer or legal aid service.",
     "emergency_note": "If you're in immediate danger, contact emergency services first — see the numbers below."
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Questions, feedback, or partnership ideas — reach out.",
+    "email": "Email",
+    "phone": "Phone",
+    "instagram": "Instagram",
+    "portfolio": "Portfolio",
+    "send_email": "Send Email",
+    "open_instagram": "Open Instagram",
+    "call_phone": "Call",
+    "visit_portfolio": "Visit Portfolio"
+  },
+  "auth": {
+    "continue_guest": "Continue as Guest",
+    "create_account": "Create Account",
+    "sign_in": "Sign In",
+    "sign_up_title": "Create your account",
+    "sign_in_title": "Sign in",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "no_account": "Don't have an account?",
+    "have_account": "Already have an account?",
+    "guest_note": "You don't need an account to report incidents or rate streets — accounts just add a profile, points, and badges on top.",
+    "sign_out": "Sign out",
+    "success_register": "Account created — welcome!",
+    "success_login": "Welcome back!",
+    "signed_in_as": "Signed in as"
+  },
+  "profile": {
+    "title": "Profile",
+    "member_since": "Member since",
+    "points": "Points",
+    "trust_score": "Trust Score",
+    "contribution_level": "Contribution Level",
+    "reports_submitted": "Reports submitted",
+    "ratings_submitted": "Street ratings submitted",
+    "helpful_received": "Helpful votes received",
+    "badges_earned": "Badges earned",
+    "no_badges": "No badges yet — get started by rating a street or filing a report.",
+    "sign_in_prompt": "Sign in to see your profile, points, and badges.",
+    "level_new_member": "New Member",
+    "level_contributor": "Contributor",
+    "level_trusted_member": "Trusted Member",
+    "level_community_helper": "Community Helper",
+    "level_top_contributor": "Top Contributor"
+  },
+  "badges": {
+    "first_report": "First Report",
+    "street_explorer": "Street Explorer",
+    "trusted_reporter": "Trusted Reporter",
+    "safety_helper": "Safety Helper",
+    "top_contributor": "Top Contributor",
+    "points_100": "100 Points",
+    "points_500": "500 Points",
+    "points_1000": "1000 Points"
+  },
+  "verification": {
+    "prompt": "Do you agree with this safety rating?",
+    "yes": "Yes",
+    "partially": "Partially",
+    "no": "No",
+    "confidence": "Confidence",
+    "sign_in_required": "Sign in to add your verification.",
+    "thanks": "Thanks — your verification helps others trust this score."
+  },
+  "helpful": {
+    "button": "Helpful",
+    "thanks": "Thanks for your feedback!",
+    "sign_in_required": "Sign in to mark ratings as helpful."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications yet.",
+    "mark_read": "Mark as read"
+  },
+  "street_details": {
+    "title": "Street details",
+    "safety_score": "Safety Score",
+    "confidence": "Confidence",
+    "reports": "Reports",
+    "ratings": "Ratings",
+    "lighting": "Lighting",
+    "camera": "Camera coverage",
+    "crowd": "Crowd level",
+    "nearby_places": "Nearby Safe Places",
+    "no_places_nearby": "No Safe Places recorded nearby yet.",
+    "not_enough_data": "Not enough data for this street yet."
+  },
+  "report_status": {
+    "pending": "Pending",
+    "reviewed": "Reviewed",
+    "verified": "Verified",
+    "archived": "Archived"
   }
 }

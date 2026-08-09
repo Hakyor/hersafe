@@ -6,11 +6,17 @@
 (function () {
   const API_BASE = window.HERSAFE_API_BASE || "https://hersafe-api.example.workers.dev";
   const TOKEN_KEY = "hersafe:admin_token";
+  const USER_TOKEN_KEY = "hersafe:user_token";
+  const USER_PROFILE_KEY = "hersafe:user_profile";
 
-  async function request(path, { method = "GET", body, auth = false } = {}) {
+  async function request(path, { method = "GET", body, auth = false, userAuth = false } = {}) {
     const headers = { "Content-Type": "application/json" };
     if (auth) {
       const token = sessionStorage.getItem(TOKEN_KEY);
+      if (token) headers["Authorization"] = "Bearer " + token;
+    }
+    if (userAuth) {
+      const token = localStorage.getItem(USER_TOKEN_KEY);
       if (token) headers["Authorization"] = "Bearer " + token;
     }
     const res = await fetch(API_BASE + path, {
@@ -32,7 +38,7 @@
   }
 
   const HerSafeAPI = {
-    submitReport: (payload) => request("/report", { method: "POST", body: payload }),
+    submitReport: (payload) => request("/report", { method: "POST", body: payload, userAuth: true }),
     getReports: (query = "") => request("/reports" + query),
     getStatistics: (query = "") => request("/statistics" + query),
     getMapData: (query = "") => request("/map" + query),
@@ -45,6 +51,8 @@
     adminLogout: () => sessionStorage.removeItem(TOKEN_KEY),
     isAdminAuthed: () => !!sessionStorage.getItem(TOKEN_KEY),
     getAdminReports: (query = "") => request("/admin/reports" + query, { auth: true }),
+    getAdminReportDetail: (id) => request(`/admin/report/${id}`, { auth: true }),
+    updateReportStatus: (id, status) => request(`/admin/report/${id}/status`, { method: "PATCH", body: { status }, auth: true }),
     deleteReport: (id) => request(`/admin/report/${id}`, { method: "DELETE", auth: true }),
 
     // Safe Places
@@ -55,9 +63,14 @@
 
     // Street Ratings
     getStreetRatings: (query = "") => request("/street-ratings" + query),
-    submitStreetRating: (payload) => request("/street-rating", { method: "POST", body: payload }),
+    submitStreetRating: (payload) => request("/street-rating", { method: "POST", body: payload, userAuth: true }),
     getAdminStreetRatings: () => request("/admin/street-ratings", { auth: true }),
     hideStreetRating: (id) => request(`/admin/street-rating/${id}`, { method: "DELETE", auth: true }),
+    voteHelpful: (ratingId) => request(`/rating-helpful/${ratingId}`, { method: "POST", userAuth: true }),
+    verifyRating: (streetKey, response) => request("/verify-rating", { method: "POST", body: { street_key: streetKey, response }, userAuth: true }),
+
+    // Street details
+    getStreetDetails: (lat, lng) => request(`/street-details?lat=${lat}&lng=${lng}`),
 
     // Community Alerts
     getCommunityAlerts: () => request("/community-alerts"),
@@ -67,7 +80,37 @@
 
     // Admin dashboard
     getAdminDashboardSummary: () => request("/admin/dashboard-summary", { auth: true }),
+
+    // Accounts / auth (optional — guests can do everything without these)
+    register: (name, email, password) =>
+      request("/register", { method: "POST", body: { name, email, password } }).then(saveUserSession),
+    login: (email, password) =>
+      request("/login", { method: "POST", body: { email, password } }).then(saveUserSession),
+    logout: () => {
+      localStorage.removeItem(USER_TOKEN_KEY);
+      localStorage.removeItem(USER_PROFILE_KEY);
+    },
+    isUserAuthed: () => !!localStorage.getItem(USER_TOKEN_KEY),
+    getStoredUser: () => {
+      try { return JSON.parse(localStorage.getItem(USER_PROFILE_KEY) || "null"); } catch (_) { return null; }
+    },
+    getProfile: () => request("/profile", { userAuth: true }),
+    getLeaderboard: (query = "") => request("/leaderboard" + query),
+    getUserPoints: () => request("/user-points", { userAuth: true }),
+    getUserBadges: () => request("/user-badges", { userAuth: true }),
+
+    // Notifications
+    getNotifications: () => request("/notifications", { userAuth: true }),
+    markNotificationRead: (id) => request(`/notifications/${id}/read`, { method: "PATCH", userAuth: true }),
   };
+
+  function saveUserSession(data) {
+    if (data && data.token) {
+      localStorage.setItem(USER_TOKEN_KEY, data.token);
+      localStorage.setItem(USER_PROFILE_KEY, JSON.stringify({ name: data.name, email: data.email }));
+    }
+    return data;
+  }
 
   window.HerSafeAPI = HerSafeAPI;
 })();

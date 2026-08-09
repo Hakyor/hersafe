@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Street details — HerSafe</title>
+<meta name="theme-color" content="#0e3d37" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="css/themes.css" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="street-details">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span> HerSafe</a>
+    <div class="header-actions">
+      <button class="icon-btn" data-action="toggle-theme" aria-label="Toggle dark mode"><span data-theme-icon>☀️</span></button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="container section" style="max-width:640px">
+  <h1 data-i18n="street_details.title">Street details</h1>
+
+  <div id="details-empty" class="empty-state" hidden>
+    <p data-i18n="street_details.not_enough_data">Not enough data for this street yet.</p>
+    <a class="btn btn-primary" id="rate-this-street-link" href="street-rating.html" data-i18n="nav.rate_street">Rate a Street</a>
+  </div>
+
+  <div id="details-content" hidden>
+    <div class="card flex gap-12" style="align-items:center;margin-bottom:20px">
+      <div class="safety-score-badge" id="score-badge">
+        <span class="score-num" id="score-num">—</span>
+        <span class="score-max">/100</span>
+      </div>
+      <div>
+        <strong data-i18n="street_details.safety_score">Safety Score</strong>
+        <p class="hint"><span data-i18n="street_details.confidence">Confidence</span>: <span id="confidence-num">—</span></p>
+      </div>
+    </div>
+
+    <div class="card-grid cols-3">
+      <div class="card stat-card"><div class="stat-number" id="stat-reports">0</div><div class="stat-label" data-i18n="street_details.reports">Reports</div></div>
+      <div class="card stat-card"><div class="stat-number" id="stat-ratings">0</div><div class="stat-label" data-i18n="street_details.ratings">Ratings</div></div>
+      <div class="card stat-card"><div class="stat-number" id="stat-lighting">—</div><div class="stat-label" data-i18n="street_details.lighting">Lighting</div></div>
+    </div>
+
+    <div class="card-grid cols-2" style="margin-top:12px">
+      <div class="card stat-card"><div class="stat-number" id="stat-camera">—</div><div class="stat-label" data-i18n="street_details.camera">Camera coverage</div></div>
+      <div class="card stat-card"><div class="stat-number" id="stat-crowd">—</div><div class="stat-label" data-i18n="street_details.crowd">Crowd level</div></div>
+    </div>
+
+    <div class="card" id="verify-widget" style="margin-top:20px">
+      <p data-i18n="verification.prompt">Do you agree with this safety rating?</p>
+      <div class="flex gap-8">
+        <button type="button" class="btn btn-ghost" data-verify="yes" data-i18n="verification.yes">Yes</button>
+        <button type="button" class="btn btn-ghost" data-verify="partially" data-i18n="verification.partially">Partially</button>
+        <button type="button" class="btn btn-ghost" data-verify="no" data-i18n="verification.no">No</button>
+      </div>
+      <p class="hint" id="verify-note" style="margin-top:8px"></p>
+    </div>
+
+    <section class="section" style="padding-block:24px 0">
+      <h2 data-i18n="street_details.nearby_places">Nearby Safe Places</h2>
+      <div id="nearby-places" class="card-grid cols-2"></div>
+    </section>
+
+    <a class="btn btn-primary" id="rate-again-link" href="street-rating.html" data-i18n="nav.rate_street">Rate a Street</a>
+  </div>
+</main>
+
+<script src="js/theme.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/street-details.js"></script>
+<script src="js/site-footer.js"></script>
+<script src="js/bottom-nav.js"></script>
+</body>
+</html>

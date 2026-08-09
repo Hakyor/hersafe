@@ -119,6 +119,7 @@
         marker.bindPopup(`
           <strong>${s.score}/100</strong> — ${HerSafeI18n.t("street_rating.score_" + s.label) || s.label}<br>
           ${s.city || ""} · ${s.count}<br>
+          <a href="street-details.html?lat=${s.latitude}&lng=${s.longitude}">${HerSafeI18n.t("street_details.title")}</a> ·
           <a href="street-rating.html?lat=${s.latitude}&lng=${s.longitude}">${HerSafeI18n.t("nav.rate_street")}</a>
         `);
         marker.addTo(streetRatingsLayer);

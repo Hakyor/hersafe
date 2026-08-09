@@ -3,39 +3,29 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Admin login — HerSafe</title>
-<meta name="robots" content="noindex, nofollow" />
+<title>Notifications — HerSafe</title>
+<meta name="robots" content="noindex" />
 <meta name="theme-color" content="#0e3d37" />
 <link rel="manifest" href="manifest.json" />
 <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="css/themes.css" />
 <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body data-page="admin">
+<body data-page="notifications">
 <header class="site-header">
   <div class="container header-inner">
     <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span> HerSafe</a>
     <div class="header-actions">
       <button class="icon-btn" data-action="toggle-theme" aria-label="Toggle dark mode"><span data-theme-icon>☀️</span></button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span></button>
     </div>
   </div>
 </header>
 
-<main class="container section" style="max-width:420px">
-  <div class="card">
-    <h1 data-i18n="admin.login_title">Admin login</h1>
-    <form id="admin-login-form" novalidate>
-      <div class="field">
-        <label for="username" data-i18n="admin.username">Username</label>
-        <input type="text" id="username" name="username" autocomplete="username" required />
-      </div>
-      <div class="field">
-        <label for="password" data-i18n="admin.password">Password</label>
-        <input type="password" id="password" name="password" autocomplete="current-password" required />
-      </div>
-      <div id="login-error" class="notice notice-warning" role="alert"></div>
-      <button type="submit" class="btn btn-primary btn-block" data-i18n="admin.login">Sign in</button>
-    </form>
+<main class="container section" style="max-width:560px">
+  <h1 data-i18n="notifications.title">Notifications</h1>
+  <div id="notifications-list" class="card">
+    <p class="empty-state" data-i18n="common.loading">Loading…</p>
   </div>
 </main>
 
@@ -43,10 +33,9 @@
 <script src="js/i18n.js"></script>
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
-<script src="js/admin.js"></script>
 <script src="js/auth.js"></script>
-<script src="js/site-footer.js"></script>
 <script src="js/notifications.js"></script>
+<script src="js/site-footer.js"></script>
 <script src="js/bottom-nav.js"></script>
 </body>
 </html>

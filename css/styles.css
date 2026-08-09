@@ -352,3 +352,26 @@ body.hs-has-bottom-nav main, body.hs-has-bottom-nav .site-footer { padding-botto
 .route-mode-toggle button { flex: 1; padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); cursor: pointer; font-weight: 600; }
 .route-mode-toggle button[aria-pressed="true"] { background: var(--primary); color: var(--primary-ink); border-color: var(--primary); }
 .alert-banner { display: flex; align-items: center; gap: 10px; background: color-mix(in srgb, var(--status-caution) 16%, var(--surface)); border: 1px solid color-mix(in srgb, var(--status-caution) 45%, var(--border)); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 14px; font-size: 0.9rem; }
+
+/* =====================================================================
+   Generic modal (admin report detail, etc.)
+   ===================================================================== */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(8,21,19,0.5); z-index: 200;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+@media (min-width: 640px) { .modal-overlay { align-items: center; } }
+.modal-box {
+  background: var(--surface); border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  max-width: 560px; width: 100%; max-height: 88vh; overflow-y: auto; padding: 22px;
+  box-shadow: var(--shadow);
+}
+@media (min-width: 640px) { .modal-box { border-radius: var(--radius-lg); } }
+.modal-close { float: inline-end; }
+.status-pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.78rem; font-weight: 600; }
+.status-pending { background: color-mix(in srgb, var(--status-caution) 25%, var(--surface-muted)); }
+.status-reviewed { background: color-mix(in srgb, var(--teal-400) 25%, var(--surface-muted)); }
+.status-verified { background: color-mix(in srgb, var(--status-safe) 25%, var(--surface-muted)); }
+.status-archived { background: var(--surface-muted); color: var(--ink-soft); }
+.admin-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.admin-filters input, .admin-filters select { flex: 1 1 160px; }

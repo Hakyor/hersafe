@@ -35,15 +35,37 @@
   </div>
 
   <div data-tab-panel="reports">
+    <div class="admin-filters">
+      <input type="text" id="reports-search" placeholder="Search description or city…" />
+      <select id="reports-filter-type">
+        <option value="">All types</option>
+        <option value="verbal_harassment">Verbal harassment</option>
+        <option value="stalking">Stalking / following</option>
+        <option value="physical">Physical contact</option>
+        <option value="catcalling">Catcalling</option>
+        <option value="online">Online harassment</option>
+        <option value="unsafe_area">Unsafe area / poor lighting</option>
+        <option value="other">Other</option>
+      </select>
+      <select id="reports-filter-status">
+        <option value="">All statuses</option>
+        <option value="pending" data-i18n="report_status.pending">Pending</option>
+        <option value="reviewed" data-i18n="report_status.reviewed">Reviewed</option>
+        <option value="verified" data-i18n="report_status.verified">Verified</option>
+        <option value="archived" data-i18n="report_status.archived">Archived</option>
+      </select>
+    </div>
     <div class="card table-wrap">
       <table id="admin-reports-table">
         <thead>
-          <tr><th>ID</th><th>Type</th><th>City</th><th>Created</th><th>Evidence</th><th></th></tr>
+          <tr><th>ID</th><th>Type</th><th>City</th><th>Reporter</th><th>Status</th><th>Created</th><th>Evidence</th><th></th></tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
   </div>
+
+  <div id="report-detail-modal-root"></div>
 
   <div data-tab-panel="places" hidden>
     <div class="card" style="margin-bottom:16px">
@@ -127,6 +149,10 @@
         <div id="safest-streets"></div>
       </div>
     </div>
+    <div class="card" style="margin-top:16px">
+      <h3>Top Contributors</h3>
+      <div id="top-contributors"></div>
+    </div>
   </div>
 </main>
 
@@ -137,6 +163,9 @@
 <script src="js/api.js"></script>
 <script src="js/main.js"></script>
 <script src="js/admin.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/site-footer.js"></script>
+<script src="js/notifications.js"></script>
 <script src="js/bottom-nav.js"></script>
 </body>
 </html>

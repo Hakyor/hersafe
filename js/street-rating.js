@@ -90,7 +90,11 @@
       badge.className = "safety-score-badge " + scoreClass(data.score);
       document.getElementById("score-num").textContent = data.score;
       document.getElementById("score-label").textContent = HerSafeI18n.t("street_rating.score_" + data.label);
-      document.getElementById("score-count").textContent = `${data.count} ratings`;
+      document.getElementById("score-count").textContent =
+        `${data.count} ratings` + (data.confidence != null ? ` · ${HerSafeI18n.t("verification.confidence")}: ${data.confidence}%` : "");
+
+      const detailsLink = document.getElementById("street-details-link");
+      if (detailsLink) detailsLink.href = `street-details.html?lat=${lat}&lng=${lng}`;
 
       historyBox.innerHTML = (data.history || [])
         .slice(0, 10)
@@ -99,9 +103,29 @@
             <span class="report-tag">${h.score}/100</span>
             <span class="report-meta">${new Date(h.created_at).toLocaleDateString()}</span>
             ${h.comment ? `<p style="margin-top:6px">${escapeHtml(h.comment)}</p>` : ""}
+            <button type="button" class="btn btn-ghost btn-sm" data-helpful="${h.id}" style="margin-top:6px">
+              👍 <span data-i18n="helpful.button">Helpful</span> (${h.helpful_count || 0})
+            </button>
           </div>`
         )
         .join("") || `<p class="empty-state" data-i18n="street_rating.no_ratings">No ratings yet for this street. Be the first.</p>`;
+
+      historyBox.querySelectorAll("[data-helpful]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          if (!HerSafeAPI.isUserAuthed()) {
+            HerSafeToast(HerSafeI18n.t("helpful.sign_in_required"));
+            return;
+          }
+          try {
+            const result = await HerSafeAPI.voteHelpful(btn.dataset.helpful);
+            HerSafeToast(HerSafeI18n.t("helpful.thanks"));
+            btn.innerHTML = `👍 <span data-i18n="helpful.button">Helpful</span> (${result.helpful_count})`;
+            btn.disabled = true;
+          } catch (err) {
+            HerSafeToast(err.message);
+          }
+        });
+      });
     } catch (_) {
       box.hidden = true;
     }

@@ -50,14 +50,28 @@
   // ---------------------------------------------------------------------
   // Reports tab
   // ---------------------------------------------------------------------
+  const STATUS_LABEL_KEY = { pending: "report_status.pending", reviewed: "report_status.reviewed", verified: "report_status.verified", archived: "report_status.archived" };
+
+  function buildReportsQuery() {
+    const search = document.getElementById("reports-search")?.value.trim() || "";
+    const type = document.getElementById("reports-filter-type")?.value || "";
+    const status = document.getElementById("reports-filter-status")?.value || "";
+    const params = new URLSearchParams();
+    if (search) params.set("search", search);
+    if (type) params.set("type", type);
+    if (status) params.set("status", status);
+    const qs = params.toString();
+    return qs ? `?${qs}` : "";
+  }
+
   async function loadReports() {
     const tbody = document.querySelector("#admin-reports-table tbody");
     if (!tbody) return;
-    tbody.innerHTML = `<tr><td colspan="6">${HerSafeI18n.t("common.loading")}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8">${HerSafeI18n.t("common.loading")}</td></tr>`;
     try {
-      const reports = await HerSafeAPI.getAdminReports();
+      const reports = await HerSafeAPI.getAdminReports(buildReportsQuery());
       if (!reports.length) {
-        tbody.innerHTML = `<tr><td colspan="6">${HerSafeI18n.t("admin.no_reports")}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8">${HerSafeI18n.t("admin.no_reports")}</td></tr>`;
         return;
       }
       tbody.innerHTML = reports
@@ -67,28 +81,92 @@
           <td>${r.id}</td>
           <td>${escapeHtml(r.incident_type)}</td>
           <td>${escapeHtml(r.city)}</td>
-          <td>${new Date(r.created_at).toLocaleString()}</td>
+          <td>${escapeHtml(r.reporter_name)}</td>
+          <td><span class="status-pill status-${r.review_status}">${HerSafeI18n.t(STATUS_LABEL_KEY[r.review_status]) || r.review_status}</span></td>
+          <td>${new Date(r.created_at).toLocaleDateString()}</td>
           <td>${r.evidence_count ?? 0}</td>
-          <td><button class="btn btn-danger btn-sm" data-delete-report="${r.id}">${HerSafeI18n.t("admin.delete")}</button></td>
+          <td class="flex gap-8">
+            <button class="btn btn-ghost btn-sm" data-view-report="${r.id}">View</button>
+            <button class="btn btn-danger btn-sm" data-delete-report="${r.id}">${HerSafeI18n.t("admin.delete")}</button>
+          </td>
         </tr>`
         )
         .join("");
     } catch (err) {
-      tbody.innerHTML = `<tr><td colspan="6">${escapeHtml(err.message)}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="8">${escapeHtml(err.message)}</td></tr>`;
     }
   }
 
   async function handleReportsClick(e) {
-    const btn = e.target.closest("[data-delete-report]");
-    if (!btn) return;
-    const id = btn.getAttribute("data-delete-report");
-    if (!confirm(HerSafeI18n.t("admin.confirm_delete"))) return;
+    const delBtn = e.target.closest("[data-delete-report]");
+    const viewBtn = e.target.closest("[data-view-report]");
+
+    if (delBtn) {
+      const id = delBtn.getAttribute("data-delete-report");
+      if (!confirm(HerSafeI18n.t("admin.confirm_delete"))) return;
+      try {
+        await HerSafeAPI.deleteReport(id);
+        HerSafeToast("Deleted");
+        loadReports();
+      } catch (err) {
+        HerSafeToast(err.message);
+      }
+      return;
+    }
+    if (viewBtn) openReportModal(viewBtn.getAttribute("data-view-report"));
+  }
+
+  async function openReportModal(id) {
+    const root = document.getElementById("report-detail-modal-root");
+    root.innerHTML = `<div class="modal-overlay" id="report-modal-overlay"><div class="modal-box"><p>${HerSafeI18n.t("common.loading")}</p></div></div>`;
+    const overlay = document.getElementById("report-modal-overlay");
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) root.innerHTML = ""; });
+
     try {
-      await HerSafeAPI.deleteReport(id);
-      HerSafeToast("Deleted");
-      loadReports();
+      const r = await HerSafeAPI.getAdminReportDetail(id);
+      const evidenceHtml = r.evidence_links.length
+        ? r.evidence_links.map((l) => `<li><a href="${escapeHtml(l.google_drive_url)}" target="_blank" rel="noopener">${l.type}</a></li>`).join("")
+        : `<li class="hint">None</li>`;
+
+      root.querySelector(".modal-box").innerHTML = `
+        <button class="icon-btn modal-close" data-close-modal aria-label="Close">✕</button>
+        <h2>Report #${r.id}</h2>
+        <p><span class="status-pill status-${r.review_status}">${HerSafeI18n.t(STATUS_LABEL_KEY[r.review_status]) || r.review_status}</span></p>
+        <div class="rating-row"><span>Type</span><strong>${escapeHtml(r.incident_type)}</strong></div>
+        <div class="rating-row"><span>City</span><strong>${escapeHtml(r.city || "—")}</strong></div>
+        <div class="rating-row"><span>Date / Time</span><strong>${escapeHtml(r.incident_date || "—")} ${escapeHtml(r.incident_time || "")}</strong></div>
+        <div class="rating-row"><span>Reporter</span><strong>${escapeHtml(r.reporter_name)}</strong></div>
+        ${r.reporter_email ? `<div class="rating-row"><span>Email</span><strong>${escapeHtml(r.reporter_email)}</strong></div>` : ""}
+        <p style="margin-top:12px"><strong>Description</strong></p>
+        <p>${escapeHtml(r.description || "—")}</p>
+        <p style="margin-top:12px"><strong>Evidence links</strong></p>
+        <ul style="padding-inline-start:18px">${evidenceHtml}</ul>
+        <div class="field" style="margin-top:16px">
+          <label for="report-status-select">Change status</label>
+          <select id="report-status-select">
+            <option value="pending" ${r.review_status === "pending" ? "selected" : ""}>Pending</option>
+            <option value="reviewed" ${r.review_status === "reviewed" ? "selected" : ""}>Reviewed</option>
+            <option value="verified" ${r.review_status === "verified" ? "selected" : ""}>Verified</option>
+            <option value="archived" ${r.review_status === "archived" ? "selected" : ""}>Archived</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-block" id="save-report-status" data-id="${r.id}">${HerSafeI18n.t("common.save")}</button>
+      `;
+
+      root.querySelector("[data-close-modal]").addEventListener("click", () => (root.innerHTML = ""));
+      root.querySelector("#save-report-status").addEventListener("click", async (e) => {
+        const status = document.getElementById("report-status-select").value;
+        try {
+          await HerSafeAPI.updateReportStatus(e.target.dataset.id, status);
+          HerSafeToast("Status updated");
+          root.innerHTML = "";
+          loadReports();
+        } catch (err) {
+          HerSafeToast(err.message);
+        }
+      });
     } catch (err) {
-      HerSafeToast(err.message);
+      root.querySelector(".modal-box").innerHTML = `<p>${escapeHtml(err.message)}</p>`;
     }
   }
 
@@ -328,9 +406,17 @@
         <div class="card stat-card"><div class="stat-number">${summary.total_safe_places}</div><div class="stat-label">Safe Places</div></div>
         <div class="card stat-card"><div class="stat-number">${summary.total_street_ratings}</div><div class="stat-label">Street Ratings</div></div>
         <div class="card stat-card"><div class="stat-number">${summary.total_active_alerts}</div><div class="stat-label">Active Alerts</div></div>
+        <div class="card stat-card"><div class="stat-number">${summary.total_registered_users}</div><div class="stat-label">Registered Users</div></div>
+        <div class="card stat-card"><div class="stat-number">${summary.total_anonymous_reports}</div><div class="stat-label">Anonymous Reports</div></div>
       `;
       document.getElementById("riskiest-streets").innerHTML = streetListHtml(summary.riskiest_streets);
       document.getElementById("safest-streets").innerHTML = streetListHtml(summary.safest_streets);
+      const topBox = document.getElementById("top-contributors");
+      if (topBox) {
+        topBox.innerHTML = summary.top_contributors.length
+          ? summary.top_contributors.map((c) => `<div class="rating-row"><span>${escapeHtml(c.name)}</span><strong>${c.points} pts</strong></div>`).join("")
+          : `<p class="empty-state">${HerSafeI18n.t("common.no_results")}</p>`;
+      }
     } catch (err) {
       cardsBox.innerHTML = `<p class="empty-state">${escapeHtml(err.message)}</p>`;
     }
@@ -363,6 +449,14 @@
       initTabs();
       loadReports();
       document.getElementById("admin-reports-table")?.addEventListener("click", handleReportsClick);
+      document.getElementById("report-detail-modal-root")?.addEventListener("click", () => {});
+      let searchTimer;
+      document.getElementById("reports-search")?.addEventListener("input", () => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(loadReports, 300);
+      });
+      document.getElementById("reports-filter-type")?.addEventListener("change", loadReports);
+      document.getElementById("reports-filter-status")?.addEventListener("change", loadReports);
       document.getElementById("admin-places-table")?.addEventListener("click", handlePlacesTableClick);
       document.getElementById("admin-ratings-table")?.addEventListener("click", handleRatingsTableClick);
       document.getElementById("place-form")?.addEventListener("submit", handlePlaceFormSubmit);

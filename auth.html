@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Sign in — HerSafe</title>
+<meta name="theme-color" content="#0e3d37" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="css/themes.css" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="auth">
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span> HerSafe</a>
+    <div class="header-actions">
+      <button class="icon-btn" data-action="toggle-theme" aria-label="Toggle dark mode"><span data-theme-icon>☀️</span></button>
+    </div>
+  </div>
+</header>
+
+<main class="container section" style="max-width:420px">
+  <div class="tabs" role="tablist">
+    <button class="tab-btn" role="tab" data-auth-tab="login" aria-selected="true" data-i18n="auth.sign_in">Sign In</button>
+    <button class="tab-btn" role="tab" data-auth-tab="register" aria-selected="false" data-i18n="auth.create_account">Create Account</button>
+  </div>
+
+  <div class="notice" data-i18n="auth.guest_note">You don't need an account to report incidents or rate streets — accounts just add a profile, points, and badges on top.</div>
+
+  <div class="card" data-auth-panel="login">
+    <h1 data-i18n="auth.sign_in_title">Sign in</h1>
+    <form id="login-form" novalidate>
+      <div class="field"><label for="login-email" data-i18n="auth.email">Email</label><input type="email" id="login-email" required /></div>
+      <div class="field"><label for="login-password" data-i18n="auth.password">Password</label><input type="password" id="login-password" required /></div>
+      <div id="login-error" class="notice notice-warning" role="alert"></div>
+      <button type="submit" class="btn btn-primary btn-block" data-i18n="auth.sign_in">Sign In</button>
+    </form>
+  </div>
+
+  <div class="card" data-auth-panel="register" hidden>
+    <h1 data-i18n="auth.sign_up_title">Create your account</h1>
+    <form id="register-form" novalidate>
+      <div class="field"><label for="register-name" data-i18n="auth.name">Name</label><input type="text" id="register-name" required /></div>
+      <div class="field"><label for="register-email" data-i18n="auth.email">Email</label><input type="email" id="register-email" required /></div>
+      <div class="field"><label for="register-password" data-i18n="auth.password">Password</label><input type="password" id="register-password" minlength="8" required /></div>
+      <div id="register-error" class="notice notice-warning" role="alert"></div>
+      <button type="submit" class="btn btn-primary btn-block" data-i18n="auth.create_account">Create Account</button>
+    </form>
+  </div>
+
+  <button type="button" class="btn btn-ghost btn-block" id="continue-guest" style="margin-top:14px" data-i18n="auth.continue_guest">Continue as Guest</button>
+</main>
+
+<script src="js/theme.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/site-footer.js"></script>
+</body>
+</html>

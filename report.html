@@ -94,6 +94,10 @@
         <input type="checkbox" id="anonymous" name="anonymous" checked />
         <label for="anonymous" data-i18n="report.field_anonymous">Submit completely anonymously (recommended)</label>
       </div>
+      <p class="hint" data-auth-signed-in hidden>
+        <span data-i18n="auth.signed_in_as">Signed in as</span> <span data-auth-name></span> —
+        uncheck the box above if you'd like credit (points) for this report.
+      </p>
 
       <fieldset class="field" style="border:none;padding:0">
         <legend style="font-weight:600;margin-bottom:6px" data-i18n="report.evidence_title">Evidence links (optional)</legend>
@@ -133,6 +137,9 @@
 <script src="js/api.js"></script>
 <script src="js/main.js"></script>
 <script src="js/report.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/site-footer.js"></script>
+<script src="js/notifications.js"></script>
 <script src="js/bottom-nav.js"></script>
 </body>
 </html>

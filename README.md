@@ -36,8 +36,19 @@ borders (see `EGYPT_BOUNDS` in `js/report.js`, `js/map.js`, and
 - Light and dark themes
 - Native-app-style mobile navigation: bottom tab bar with a center
   "New Report" FAB and a slide-out drawer for secondary pages
-- Password-protected admin panel: reports, Safe Places CRUD, street
-  rating moderation, community alerts, and dashboard statistics
+- Password-protected admin panel: reports (search/filter/status/detail),
+  Safe Places CRUD, street rating moderation, community alerts, and
+  dashboard statistics
+- **Optional accounts** — guests can do everything (report, rate streets);
+  signing up adds a profile, points, trust score, and badges
+- **Gamification** — points for reports/ratings/verifications, a trust
+  score with named levels, and achievement badges
+- **Community verification** — "Do you agree with this rating?" on the
+  Street Details page, rolled into a confidence percentage
+- **Helpful votes** on street ratings, feeding the author's points/trust
+- **In-app notifications** with an unread-count badge in the nav drawer
+- **Contact page** and a full footer (quick links, legal, contact/GitHub/
+  portfolio/Instagram, copyright)
 - Mobile-first, responsive, accessible (keyboard nav, ARIA labels, focus
   states, skeleton loading states, `prefers-reduced-motion` support)
 - Scoped to Egypt only (adjustable via `EGYPT_BOUNDS` in the frontend and Worker)
@@ -166,6 +177,13 @@ This project already includes `sql/0002_features.sql`, which adds the
 tables for the features below. Apply it the same way:
 ```bash
 wrangler d1 execute hersafe-db --remote --file=./sql/0002_features.sql --config=worker/wrangler.toml
+```
+
+It also includes `sql/0003_accounts_gamification.sql`, adding optional
+accounts, points, trust scores, badges, community verification, helpful
+votes, notifications, and admin logs:
+```bash
+wrangler d1 execute hersafe-db --remote --file=./sql/0003_accounts_gamification.sql --config=worker/wrangler.toml
 ```
 
 ## Configuration reference

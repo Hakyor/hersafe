@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Profile — HerSafe</title>
+<meta name="robots" content="noindex" />
+<meta name="theme-color" content="#0e3d37" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="css/themes.css" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="profile">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span> HerSafe</a>
+    <div class="header-actions">
+      <button class="icon-btn" data-action="toggle-theme" aria-label="Toggle dark mode"><span data-theme-icon>☀️</span></button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="container section" style="max-width:640px">
+  <div id="profile-guest" class="card center" hidden>
+    <p data-i18n="profile.sign_in_prompt">Sign in to see your profile, points, and badges.</p>
+    <a class="btn btn-primary" href="auth.html?next=profile.html" data-i18n="auth.sign_in">Sign In</a>
+  </div>
+
+  <div id="profile-content" hidden>
+    <div class="card flex gap-12" style="align-items:center;margin-bottom:20px">
+      <div style="width:64px;height:64px;border-radius:50%;background:var(--surface-muted);display:grid;place-items:center;font-size:1.6rem;flex-shrink:0">👤</div>
+      <div>
+        <h1 id="profile-name" style="margin-bottom:2px"></h1>
+        <p class="hint" id="profile-email"></p>
+        <p class="hint"><span data-i18n="profile.member_since">Member since</span> <span id="profile-since"></span></p>
+      </div>
+    </div>
+
+    <div class="card-grid cols-3">
+      <div class="card stat-card"><div class="stat-number" id="stat-points">0</div><div class="stat-label" data-i18n="profile.points">Points</div></div>
+      <div class="card stat-card"><div class="stat-number" id="stat-trust">0</div><div class="stat-label" data-i18n="profile.trust_score">Trust Score</div></div>
+      <div class="card stat-card"><div class="stat-number" id="stat-level" style="font-size:1rem"></div><div class="stat-label" data-i18n="profile.contribution_level">Contribution Level</div></div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="rating-row"><span data-i18n="profile.reports_submitted">Reports submitted</span><strong id="stat-reports">0</strong></div>
+      <div class="rating-row"><span data-i18n="profile.ratings_submitted">Street ratings submitted</span><strong id="stat-ratings">0</strong></div>
+      <div class="rating-row"><span data-i18n="profile.helpful_received">Helpful votes received</span><strong id="stat-helpful">0</strong></div>
+    </div>
+
+    <section class="section" style="padding-block:24px 0">
+      <h2 data-i18n="profile.badges_earned">Badges earned</h2>
+      <div id="badges-list" class="card-grid cols-3"></div>
+    </section>
+  </div>
+</main>
+
+<script src="js/theme.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/profile.js"></script>
+<script src="js/site-footer.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/bottom-nav.js"></script>
+</body>
+</html>

@@ -56,18 +56,28 @@
     drawer.innerHTML = `
       <button class="icon-btn hs-drawer-close" id="hs-drawer-close" aria-label="Close menu">✕</button>
       <h2 data-i18n="nav.menu">Menu</h2>
+      <div data-auth-signed-in hidden style="padding:8px;margin-bottom:6px;border-bottom:1px solid var(--border)">
+        <strong data-i18n="auth.signed_in_as">Signed in as</strong> <span data-auth-name></span>
+      </div>
       <a href="index.html" data-i18n="nav.home">Home</a>
       <a href="report.html" data-i18n="nav.report">Report Incident</a>
       <a href="map.html" data-i18n="nav.map">Safety Map</a>
       <a href="safety.html" data-i18n="nav.safety">Safety Hub</a>
       <a href="street-rating.html" data-i18n="nav.rate_street">Rate a Street</a>
       <a href="statistics.html" data-i18n="nav.statistics">Statistics</a>
+      <a href="leaderboard.html" data-i18n="nav.leaderboard">Leaderboard</a>
       <a href="guide.html" data-i18n="nav.guide">Safety Guide</a>
       <a href="support.html" data-i18n="nav.support">After Harassment</a>
       <a href="about.html" data-i18n="nav.about">About</a>
+      <a href="contact.html" data-i18n="nav.contact">Contact</a>
       <a href="privacy.html" data-i18n="nav.privacy">Privacy Policy</a>
       <a href="terms.html" data-i18n="nav.terms">Terms</a>
       <a href="admin-login.html" data-i18n="nav.admin">Admin</a>
+      <hr style="border-color:var(--border);margin:12px 0" />
+      <a href="profile.html" data-auth-signed-in hidden data-i18n="nav.profile_page">My Profile</a>
+      <a href="notifications.html" data-auth-signed-in hidden data-i18n="notifications.title">Notifications</a>
+      <button type="button" class="hs-drawer-action" data-action="sign-out" data-auth-signed-in hidden data-i18n="auth.sign_out">Sign out</button>
+      <a href="auth.html" data-auth-signed-out data-i18n="auth.sign_in">Sign In</a>
       <hr style="border-color:var(--border);margin:12px 0" />
       <button type="button" class="hs-drawer-action" data-action="toggle-lang" data-i18n="common.language">العربية</button>
       <button type="button" class="hs-drawer-action" data-action="toggle-theme">
