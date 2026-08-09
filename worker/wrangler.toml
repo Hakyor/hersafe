@@ -5,10 +5,13 @@ compatibility_date = "2026-07-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "hersafe-db"
-database_id = "9837076f-8e63-4af9-a016-a2f9822f710d"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
 
 [vars]
-ALLOWED_ORIGIN = "https://yourusername.github.io"
+# Must exactly match your GitHub Pages origin (scheme + host, no trailing
+# slash, no path) or the browser will block every API request with a CORS
+# error. Update this if your GitHub username/Pages URL ever changes.
+ALLOWED_ORIGIN = "https://hakyor.github.io"
 
 # Set with: wrangler secret put TOKEN_SECRET
 # Do NOT put the real secret value in this file or commit it.

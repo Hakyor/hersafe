@@ -175,5 +175,15 @@
     document.getElementById("use-gps")?.addEventListener("click", useGps);
     document.getElementById("add-evidence-link")?.addEventListener("click", addEvidenceRow);
     document.getElementById("report-form")?.addEventListener("submit", handleSubmit);
+    document.getElementById("report-another")?.addEventListener("click", () => {
+      document.getElementById("report-form")?.reset();
+      document.getElementById("evidence-rows").innerHTML = "";
+      if (marker && picker) { picker.removeLayer(marker); marker = null; }
+      selectedLat = null;
+      selectedLng = null;
+      document.getElementById("report-success").hidden = true;
+      document.getElementById("report-form-wrap").hidden = false;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
   });
 })();

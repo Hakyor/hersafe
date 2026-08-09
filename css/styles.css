@@ -11,6 +11,7 @@ ul { list-style: none; margin: 0; padding: 0; }
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -21,6 +22,15 @@ body {
   font-size: 16px;
   min-height: 100dvh;
   transition: background 0.25s ease, color 0.25s ease;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Belt-and-suspenders against horizontal scroll from long unbroken
+   strings (emails, URLs, IDs) inside cards, tables, and lists. */
+.card, td, .report-item, .rating-row, .notice, .hs-drawer, .modal-box {
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 h1, h2, h3, .display {
@@ -69,33 +79,24 @@ p { margin: 0 0 1em; color: var(--ink-soft); }
 }
 .header-actions { display: flex; align-items: center; gap: 8px; }
 .icon-btn {
-  width: 40px; height: 40px; display: grid; place-items: center;
+  width: 44px; height: 44px; display: grid; place-items: center;
   border-radius: 50%; border: 1px solid var(--border); background: var(--surface);
-  cursor: pointer;
+  cursor: pointer; flex-shrink: 0;
 }
 .icon-btn:hover { background: var(--surface-muted); }
 
-.nav-toggle { display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); cursor: pointer; }
-.nav-toggle span { display: block; width: 18px; height: 2px; background: var(--ink); position: relative; }
-.nav-toggle span::before, .nav-toggle span::after { content: ""; position: absolute; inset-inline-start: 0; width: 18px; height: 2px; background: var(--ink); }
-.nav-toggle span::before { top: -6px; }
-.nav-toggle span::after { top: 6px; }
-
-.site-nav {
-  position: fixed; inset: 0; top: 64px;
-  background: var(--bg); padding: 24px 18px;
-  transform: translateY(-8px); opacity: 0; pointer-events: none;
-  transition: transform 0.25s ease, opacity 0.25s ease;
-  z-index: 90;
-}
-.site-nav.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+/* Mobile (<860px): navigation lives entirely in the bottom nav + slide-out
+   drawer (js/bottom-nav.js). The old top hamburger/full-screen nav is
+   desktop-only below, so there's exactly one nav system per breakpoint
+   instead of two competing ones. */
+.nav-toggle { display: none; }
+.site-nav { display: none; }
 .site-nav ul { display: flex; flex-direction: column; gap: 4px; }
 .site-nav a { display: block; padding: 14px 12px; border-radius: var(--radius-sm); font-weight: 600; font-size: 1.05rem; }
 .site-nav a:hover, .site-nav a[aria-current="page"] { background: var(--surface-muted); color: var(--primary); }
 
 @media (min-width: 860px) {
-  .nav-toggle { display: none; }
-  .site-nav { position: static; inset: auto; padding: 0; transform: none; opacity: 1; pointer-events: auto; }
+  .site-nav { display: block; position: static; }
   .site-nav ul { flex-direction: row; gap: 2px; }
   .site-nav a { padding: 8px 14px; font-size: 0.98rem; }
 }
@@ -297,7 +298,7 @@ html[dir="rtl"] .hs-drawer { transform: translateX(-100%); }
 .hs-drawer a:hover, .hs-drawer button.hs-drawer-action:hover { background: var(--surface-muted); }
 .hs-drawer-close { position: absolute; top: 14px; inset-inline-end: 14px; }
 
-body.hs-has-bottom-nav main, body.hs-has-bottom-nav .site-footer { padding-bottom: 74px; }
+body.hs-has-bottom-nav main, body.hs-has-bottom-nav .site-footer { padding-bottom: 88px; }
 @media (min-width: 860px) {
   .hs-bottom-nav, .hs-drawer, .hs-drawer-overlay { display: none !important; }
   body.hs-has-bottom-nav main, body.hs-has-bottom-nav .site-footer { padding-bottom: 0; }
@@ -306,13 +307,13 @@ body.hs-has-bottom-nav main, body.hs-has-bottom-nav .site-footer { padding-botto
 /* =====================================================================
    Star ratings (Street Rating System)
    ===================================================================== */
-.star-rating { display: flex; gap: 4px; direction: ltr; }
+.star-rating { display: flex; gap: 2px; direction: ltr; }
 .star-rating button {
   border: none; background: none; font-size: 1.5rem; cursor: pointer; color: var(--border);
-  padding: 2px; line-height: 1;
+  padding: 8px; line-height: 1; min-width: 40px; min-height: 40px; display: grid; place-items: center;
 }
 .star-rating button.filled { color: var(--amber-500); }
-.rating-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px; border-bottom: 1px solid var(--border); }
+.rating-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
 .rating-row:last-child { border-bottom: none; }
 
 .safety-score-badge {

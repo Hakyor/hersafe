@@ -48,14 +48,20 @@
         .map(
           (r) => `
         <li class="report-item">
-          <span class="report-tag">${HerSafeI18n.t("incident_types." + r.incident_type) || r.incident_type}</span>
-          <span class="report-meta">${r.city || ""} · ${new Date(r.created_at).toLocaleDateString()}</span>
+          <span class="report-tag">${HerSafeI18n.t("incident_types." + r.incident_type) || escapeHtml(r.incident_type)}</span>
+          <span class="report-meta">${escapeHtml(r.city || "")} · ${new Date(r.created_at).toLocaleDateString()}</span>
         </li>`
         )
         .join("");
     } catch (_) {
       list.innerHTML = `<li class="report-item">${HerSafeI18n.t("home.recent_empty")}</li>`;
     }
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str == null ? "" : String(str);
+    return div.innerHTML;
   }
 
   document.addEventListener("DOMContentLoaded", () => {

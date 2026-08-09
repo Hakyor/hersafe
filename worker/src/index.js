@@ -619,6 +619,11 @@ function validateSafePlacePayload(body) {
   if (isFiniteNumber(body.latitude) && isFiniteNumber(body.longitude) && !isInEgypt(body.latitude, body.longitude)) {
     errors.push("Safe Places must be located within Egypt.");
   }
+  // Defense in depth: only allow http(s) image URLs, never javascript:/data:
+  // schemes, even though the field is also HTML-escaped on every render.
+  if (body.image_url && !/^https?:\/\//i.test(body.image_url)) {
+    errors.push("Image URL must start with http:// or https://.");
+  }
   return errors;
 }
 

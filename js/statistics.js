@@ -61,12 +61,35 @@
       const monthCanvas = document.getElementById("chart-month");
       const typeCanvas = document.getElementById("chart-type");
 
-      if (areaCanvas) drawBarChart(areaCanvas, byArea.map((d) => d.city), byArea.map((d) => d.count), "#1b6e62");
-      if (monthCanvas) drawBarChart(monthCanvas, byMonth.map((d) => d.month), byMonth.map((d) => d.count), "#d9a24b");
-      if (typeCanvas) drawBarChart(typeCanvas, byType.map((d) => d.incident_type), byType.map((d) => d.count), "#4fa696");
+      toggleChart(areaCanvas, "chart-area-empty", byArea, (c) =>
+        drawBarChart(c, byArea.map((d) => d.city), byArea.map((d) => d.count), "#1b6e62")
+      );
+      toggleChart(monthCanvas, "chart-month-empty", byMonth, (c) =>
+        drawBarChart(c, byMonth.map((d) => d.month), byMonth.map((d) => d.count), "#d9a24b")
+      );
+      toggleChart(typeCanvas, "chart-type-empty", byType, (c) =>
+        drawBarChart(c, byType.map((d) => d.incident_type), byType.map((d) => d.count), "#4fa696")
+      );
     } catch (_) {
       if (totalEl) totalEl.textContent = "—";
+      ["chart-area-empty", "chart-month-empty", "chart-type-empty"].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.hidden = false;
+      });
     }
+  }
+
+  function toggleChart(canvas, emptyId, data, drawFn) {
+    const emptyEl = document.getElementById(emptyId);
+    if (!canvas) return;
+    if (!data.length) {
+      canvas.hidden = true;
+      if (emptyEl) emptyEl.hidden = false;
+      return;
+    }
+    canvas.hidden = false;
+    if (emptyEl) emptyEl.hidden = true;
+    drawFn(canvas);
   }
 
   document.addEventListener("DOMContentLoaded", load);

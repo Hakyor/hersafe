@@ -32,6 +32,19 @@
       const message = (data && data.error) || `Request failed (${res.status})`;
       const err = new Error(message);
       err.status = res.status;
+
+      // Session expired mid-use: clear the stale token and send the admin
+      // back to login instead of leaving every tab showing a raw error.
+      // (User accounts are optional/guest-friendly, so we don't force a
+      // redirect for expired user tokens — pages that require sign-in
+      // already handle that themselves, e.g. profile.js's guest view.)
+      if (auth && (res.status === 401 || res.status === 403)) {
+        sessionStorage.removeItem(TOKEN_KEY);
+        if (!location.pathname.endsWith("admin-login.html")) {
+          location.href = "admin-login.html";
+        }
+      }
+
       throw err;
     }
     return data;
