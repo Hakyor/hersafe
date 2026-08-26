@@ -1,5 +1,5 @@
 /**
- * HerSafe — Safety Hub page (safety.html): Safe Places list.
+ * HerSafe — Safety Hub page (safety.html): Help Places list.
  */
 (function () {
   const CATEGORY_ICON = {
@@ -22,7 +22,7 @@
       if (!places || !places.length) {
         list.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
           <div class="empty-icon">🗺️</div>
-          <p data-i18n="safe_places.empty">No Safe Places added yet.</p>
+          <p>${HerSafeI18n.t("safe_places.empty")}</p>
         </div>`;
         return;
       }
@@ -43,7 +43,7 @@
         )
         .join("");
     } catch (_) {
-      list.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><p data-i18n="safe_places.empty">No Safe Places added yet.</p></div>`;
+      list.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><p>${HerSafeI18n.t("safe_places.empty")}</p></div>`;
     }
   }
 

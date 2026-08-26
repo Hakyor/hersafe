@@ -66,17 +66,23 @@
       const data = await HerSafeAPI.getMapData(query);
       incidentLayer.clearLayers();
       (Array.isArray(data) ? data : []).forEach((p) => {
+        const dateNote = p.last_report_at
+          ? `<br><span class="hint">${HerSafeI18n.t("alerts.last_report")}: ${new Date(p.last_report_at).toLocaleDateString()}</span>`
+          : "";
         L.circleMarker([p.latitude, p.longitude], {
           radius: radiusFor(p.count), color: colorFor(p.count), fillColor: colorFor(p.count),
           fillOpacity: 0.5, weight: 1,
         })
-          .bindPopup(`<strong>${p.city || ""}</strong><br>${HerSafeI18n.t("map.reports_count").replace("{count}", p.count)}`)
+          .bindPopup(
+            `<strong>${escapeHtml(p.city || "")}</strong><br>${HerSafeI18n.t("map.reports_count").replace("{count}", p.count)}${dateNote}` +
+              `<br><span class="hint">${HerSafeI18n.t("map.fact_disclaimer")}</span>`
+          )
           .addTo(incidentLayer);
       });
     } catch (_) { /* leave layer empty */ }
   }
 
-  // ---------------- Safe Places ----------------
+  // ---------------- Safe Places / Help Places ----------------
   function safePlaceIcon(category) {
     return L.divIcon({
       className: "hs-safeplace-icon",
@@ -88,21 +94,53 @@
     });
   }
 
+  function placePopupHtml(p) {
+    const lastConfirmed = p.last_confirmed_at
+      ? `${HerSafeI18n.t("safe_places.last_confirmed")}: ${new Date(p.last_confirmed_at).toLocaleDateString()}`
+      : HerSafeI18n.t("safe_places.never_confirmed");
+    return `
+      <div style="min-width:200px">
+        <strong>${escapeHtml(p.name)}</strong><br>
+        <span class="category-chip">${HerSafeI18n.t("categories." + p.category) || p.category}</span><br>
+        ${p.description ? `<p style="margin:6px 0">${escapeHtml(p.description)}</p>` : ""}
+        ${p.opening_hours ? `🕒 ${escapeHtml(p.opening_hours)}<br>` : ""}
+        ${p.phone_number ? `📞 ${escapeHtml(p.phone_number)}<br>` : ""}
+        ${p.safety_notes ? `<em>${escapeHtml(p.safety_notes)}</em><br>` : ""}
+        <p class="hint" style="margin:8px 0 4px">${lastConfirmed} (👍 ${p.confirm_yes || 0} · 👎 ${p.confirm_no || 0})</p>
+        <p style="margin:4px 0"><strong>${HerSafeI18n.t("safe_places.confirm_prompt")}</strong></p>
+        <div class="flex gap-8" data-confirm-place="${p.id}">
+          <button type="button" class="btn btn-ghost btn-sm" data-confirm-response="yes">${HerSafeI18n.t("safe_places.confirm_yes")}</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-confirm-response="no">${HerSafeI18n.t("safe_places.confirm_no")}</button>
+        </div>
+        <p class="hint" style="margin-top:8px">${HerSafeI18n.t("safe_places.disclaimer")}</p>
+      </div>
+    `;
+  }
+
   async function loadSafePlaces() {
     const category = document.getElementById("filter-place-category")?.value || "";
     try {
       const places = await HerSafeAPI.getSafePlaces(category ? `?category=${encodeURIComponent(category)}` : "");
       safePlacesLayer.clearLayers();
       (places || []).forEach((p) => {
-        const popup = `
-          <strong>${escapeHtml(p.name)}</strong><br>
-          <span class="category-chip">${HerSafeI18n.t("categories." + p.category) || p.category}</span><br>
-          ${p.description ? `<p style="margin:6px 0">${escapeHtml(p.description)}</p>` : ""}
-          ${p.opening_hours ? `🕒 ${escapeHtml(p.opening_hours)}<br>` : ""}
-          ${p.phone_number ? `📞 ${escapeHtml(p.phone_number)}<br>` : ""}
-          ${p.safety_notes ? `<em>${escapeHtml(p.safety_notes)}</em>` : ""}
-        `;
-        L.marker([p.latitude, p.longitude], { icon: safePlaceIcon(p.category) }).bindPopup(popup).addTo(safePlacesLayer);
+        const marker = L.marker([p.latitude, p.longitude], { icon: safePlaceIcon(p.category) });
+        marker.bindPopup(placePopupHtml(p));
+        marker.on("popupopen", (e) => {
+          const el = e.popup.getElement();
+          el.querySelectorAll("[data-confirm-response]").forEach((btn) => {
+            btn.addEventListener("click", async () => {
+              try {
+                await HerSafeAPI.confirmPlace(p.id, btn.dataset.confirmResponse);
+                HerSafeToast(HerSafeI18n.t("safe_places.confirm_thanks"));
+                marker.closePopup();
+                loadSafePlaces();
+              } catch (err) {
+                HerSafeToast(err.status === 429 ? HerSafeI18n.t("safe_places.already_confirmed") : err.message);
+              }
+            });
+          });
+        });
+        marker.addTo(safePlacesLayer);
       });
     } catch (_) { /* leave layer empty */ }
   }
@@ -118,7 +156,7 @@
         });
         marker.bindPopup(`
           <strong>${s.score}/100</strong> — ${HerSafeI18n.t("street_rating.score_" + s.label) || s.label}<br>
-          ${s.city || ""} · ${s.count}<br>
+          ${escapeHtml(s.city || "")} · ${s.count}<br>
           <a href="street-details.html?lat=${s.latitude}&lng=${s.longitude}">${HerSafeI18n.t("street_details.title")}</a> ·
           <a href="street-rating.html?lat=${s.latitude}&lng=${s.longitude}">${HerSafeI18n.t("nav.rate_street")}</a>
         `);
@@ -134,13 +172,18 @@
       const alerts = await HerSafeAPI.getCommunityAlerts();
       alertsLayer.clearLayers();
       (alerts || []).forEach((a) => {
+        const text = a.severity === "elevated" ? HerSafeI18n.t("alerts.elevated_text") : HerSafeI18n.t("alerts.banner_text");
+        const windowNote = HerSafeI18n.t("alerts.window_note").replace("{days}", a.window_days);
+        const lastReport = a.last_report_at
+          ? `<br><span class="hint">${HerSafeI18n.t("alerts.last_report")}: ${new Date(a.last_report_at).toLocaleDateString()}</span>`
+          : "";
         L.circle([a.latitude, a.longitude], {
           radius: 400,
           color: a.severity === "elevated" ? "#c0392b" : "#d9a531",
           fillOpacity: 0.08,
           dashArray: "6 6",
         })
-          .bindPopup(a.severity === "elevated" ? HerSafeI18n.t("alerts.elevated_text") : HerSafeI18n.t("alerts.banner_text"))
+          .bindPopup(`${text}<br><span class="hint">${windowNote}</span>${lastReport}`)
           .addTo(alertsLayer);
       });
       if (banner) banner.hidden = !alerts.length;

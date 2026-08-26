@@ -20,7 +20,10 @@
     "privacy": "Privacy",
     "contact": "Contact",
     "profile_page": "My Profile",
-    "leaderboard": "Leaderboard"
+    "leaderboard": "Leaderboard",
+    "online_safety": "Online Safety",
+    "campaigns": "Campaigns",
+    "suggest_place": "Suggest a Help Place"
   },
   "home": {
     "hero_eyebrow": "Anonymous. Encrypted intent. Community-owned.",
@@ -68,7 +71,7 @@
     "submit": "Submit report",
     "submitting": "Submitting…",
     "success_title": "Report received",
-    "success_body": "Thank you. Your report is anonymous and has been added to the community record.",
+    "success_body": "Thank you. Your report has been received and will only appear publicly after a quick admin review — this helps keep the map accurate and fair.",
     "submit_another": "Submit another report",
     "error_generic": "Something went wrong. Please try again.",
     "error_location": "We couldn't detect your location. You can still pick it on the map or type a city name."
@@ -93,7 +96,8 @@
     "period_all": "All time",
     "period_month": "Last 30 days",
     "period_year": "Last 12 months",
-    "reports_count": "{count} anonymous reports here"
+    "reports_count": "{count} community reports were submitted here",
+    "fact_disclaimer": "These reflect community reports, not confirmed facts."
   },
   "statistics": {
     "title": "Community statistics",
@@ -146,18 +150,27 @@
     "logout": "Log out",
     "reports_tab": "Reports",
     "types_tab": "Incident types",
-    "places_tab": "Safe Places",
+    "places_tab": "Help Places",
     "ratings_tab": "Street Ratings",
     "alerts_tab": "Alerts",
     "stats_tab": "Statistics",
     "delete": "Delete",
     "confirm_delete": "Delete this report permanently?",
-    "confirm_delete_place": "Delete this Safe Place permanently?",
+    "confirm_delete_place": "Delete this Help Place permanently?",
     "confirm_hide_rating": "Hide this rating from public view?",
     "no_reports": "No reports found.",
-    "no_places": "No Safe Places yet.",
+    "no_places": "No Help Places yet.",
     "no_ratings": "No street ratings yet.",
-    "no_alerts": "No active community alerts."
+    "no_alerts": "No active community alerts.",
+    "campaigns_tab": "Campaigns",
+    "moderation_note": "New reports start Pending and are never shown publicly until you Approve them. Trust score reflects community activity, not proof that a report is accurate — use it only to help prioritize review.",
+    "place_moderation_note": "User-suggested Help Places start Pending and never appear on the public map until approved.",
+    "campaigns_note": "Campaigns must always point to a platform's official report form and never ask users to contact, confront, or share content about anyone.",
+    "flagged_only": "Flagged only",
+    "approve": "Approve",
+    "reject": "Reject",
+    "status_updated": "Status updated",
+    "trust_note": "Trust score reflects community activity, not proof this report is accurate."
   },
   "footer": {
     "rights": "All community data is anonymous and aggregated.",
@@ -190,9 +203,9 @@
     "trusted_place": "Trusted Public Place"
   },
   "safe_places": {
-    "title": "Safe Places",
-    "subtitle": "Admin-verified places you can turn to nearby.",
-    "show_on_map": "Show Safe Places on map",
+    "title": "Help Places",
+    "subtitle": "Community points nearby — police, hospitals, and other useful help locations. Never a guarantee of safety.",
+    "show_on_map": "Show Help Places on map",
     "filter_category": "Category",
     "all_categories": "All categories",
     "field_name": "Name",
@@ -202,9 +215,21 @@
     "field_phone": "Phone number",
     "field_image": "Image URL",
     "field_notes": "Safety notes",
-    "empty": "No Safe Places added yet.",
-    "add_new": "Add Safe Place",
-    "pick_location": "Tap the map to set this place's location"
+    "empty": "No Help Places added yet.",
+    "add_new": "Add Help Place",
+    "pick_location": "Tap the map to set this place's location",
+    "field_note": "Note (optional)",
+    "suggest_new": "Suggest a Help Place",
+    "suggest_subtitle": "Know a police station, hospital, pharmacy, or other useful help location? Suggest it for the community map.",
+    "suggest_success": "Thanks — an admin will review this shortly. It will appear on the map once approved.",
+    "confirm_prompt": "Is this place still here?",
+    "confirm_yes": "Yes, it's here",
+    "confirm_no": "No, not anymore",
+    "confirm_thanks": "Thanks for confirming.",
+    "already_confirmed": "You've already confirmed this place recently.",
+    "last_confirmed": "Last confirmed",
+    "never_confirmed": "Not yet confirmed by the community",
+    "disclaimer": "HerSafe can't guarantee this place is completely safe — always use your own judgment."
   },
   "street_rating": {
     "title": "Rate this street",
@@ -246,9 +271,11 @@
     "outside_egypt": "Routing currently only covers Egypt."
   },
   "alerts": {
-    "banner_text": "Several anonymous reports have recently been submitted in this area.",
-    "elevated_text": "A notably high number of anonymous reports have recently been submitted in this area.",
-    "legend": "Community alert area"
+    "banner_text": "Community reports were submitted in this area recently.",
+    "elevated_text": "A higher number of community reports were submitted in this area recently.",
+    "legend": "Community alert area",
+    "window_note": "Based on admin-approved reports in the last {days} days.",
+    "last_report": "Most recent report"
   },
   "support": {
     "title": "What should I do after experiencing harassment?",
@@ -376,5 +403,57 @@
     "reviewed": "Reviewed",
     "verified": "Verified",
     "archived": "Archived"
+  },
+  "place_status": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "archived": "Archived"
+  },
+  "campaigns": {
+    "title": "Campaigns",
+    "subtitle": "Community awareness campaigns that point you to a platform's own official report form.",
+    "tagline": "Report, don't amplify.",
+    "tagline_body": "Reposting, screenshotting, or forwarding harmful content spreads it further — even with good intentions. The most effective thing you can do is report it directly through the platform's own tools.",
+    "never_title": "What HerSafe campaigns never do",
+    "never_1": "Never encourage mass harassment, threats, or doxxing.",
+    "never_2": "Never ask you to contact, confront, or message the person involved.",
+    "never_3": "Never submit a report on your behalf — you always report it yourself.",
+    "never_4": "Never ask you to download, re-share, or redistribute harmful content.",
+    "add_new": "Add Campaign",
+    "field_title": "Title",
+    "field_description": "Description",
+    "field_platform": "Platform",
+    "field_url": "Official report link",
+    "field_instructions": "Instructions",
+    "field_status": "Status",
+    "status_active": "Active",
+    "status_archived": "Archived",
+    "official_link": "Open official report form",
+    "empty": "No active campaigns right now."
+  },
+  "online_safety": {
+    "title": "Online Safety",
+    "intro": "Guidance for harassment that happens online, or that started offline and moved online.",
+    "harassment_title": "Online harassment",
+    "harassment_body": "Repeated unwanted messages, comments, or contact online can be reported directly to the platform where it's happening — most have a built-in report button for exactly this.",
+    "blackmail_title": "Blackmail / extortion",
+    "blackmail_body": "If someone is threatening to share private content unless you pay them or do something, this is a serious crime in most places. Don't engage or pay — preserve the messages as evidence and seek help from a trusted person or the appropriate authorities.",
+    "nonconsensual_title": "Sharing private content without consent",
+    "nonconsensual_body": "If intimate images or private content were shared without your consent, most platforms have a dedicated, expedited report process for this. Report directly on the platform — don't screenshot or re-share it further, even to show someone else.",
+    "impersonation_title": "Fake / impersonation accounts",
+    "impersonation_body": "An account pretending to be you or someone else can usually be reported through the platform's official impersonation report form, which typically asks for proof of your real identity.",
+    "offline_title": "Harassment related to an offline incident",
+    "offline_body": "If online harassment is connected to something that happened in person, both parts matter — you can report the online content to the platform and, separately, use HerSafe's own anonymous report for the offline incident.",
+    "dos_title": "What helps",
+    "do_1": "Preserve evidence safely — screenshots with dates, saved messages, links.",
+    "do_2": "Use the platform's official Report feature — it's the fastest way to get harmful content reviewed and removed.",
+    "do_3": "Seek help from a trusted adult, friend, or appropriate authority when it feels serious.",
+    "do_4": "Adjust privacy settings if it helps reduce further contact.",
+    "donts_title": "What to avoid",
+    "dont_1": "Don't repost, re-share, or forward harmful content — even to warn others, it spreads it further.",
+    "dont_2": "Don't confront, message, or try to expose the person responsible yourself.",
+    "dont_3": "Don't download or redistribute content that was shared without consent.",
+    "dont_4": "Don't assume you have to handle it alone — support is always okay to ask for."
   }
 }

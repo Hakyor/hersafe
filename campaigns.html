@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Campaigns — HerSafe</title>
+<meta name="description" content="Community awareness campaigns pointing to official platform report forms." />
+<meta name="theme-color" content="#0e3d37" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="css/themes.css" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="campaigns">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span> HerSafe</a>
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html" data-page="home" data-i18n="nav.home">Home</a></li>
+        <li><a href="report.html" data-page="report" data-i18n="nav.report">Report Incident</a></li>
+        <li><a href="map.html" data-page="map" data-i18n="nav.map">Safety Map</a></li>
+        <li><a href="safety.html" data-page="safety" data-i18n="nav.safety">Safety</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" data-action="toggle-theme" aria-label="Toggle dark mode"><span data-theme-icon>☀️</span></button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="site-nav"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="container section" style="max-width:760px">
+  <div class="section-head">
+    <h1 data-i18n="campaigns.title">Campaigns</h1>
+    <p data-i18n="campaigns.subtitle">Community awareness campaigns that point you to a platform's own official report form.</p>
+  </div>
+
+  <div class="card" style="margin-bottom:24px">
+    <h2 style="margin-bottom:6px" data-i18n="campaigns.tagline">Report, don't amplify.</h2>
+    <p data-i18n="campaigns.tagline_body">…</p>
+    <h3 style="margin-top:14px" data-i18n="campaigns.never_title">What HerSafe campaigns never do</h3>
+    <ul style="padding-inline-start:20px;color:var(--ink-soft);display:flex;flex-direction:column;gap:4px;margin-top:6px">
+      <li data-i18n="campaigns.never_1">…</li>
+      <li data-i18n="campaigns.never_2">…</li>
+      <li data-i18n="campaigns.never_3">…</li>
+      <li data-i18n="campaigns.never_4">…</li>
+    </ul>
+  </div>
+
+  <div id="campaigns-list" class="card-grid cols-2">
+    <div class="card skeleton skeleton-card"></div>
+    <div class="card skeleton skeleton-card"></div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p data-i18n="footer.rights">All community data is anonymous and aggregated.</p>
+  </div>
+</footer>
+
+<script src="js/theme.js"></script>
+<script src="js/toast.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/main.js"></script>
+<script src="js/campaigns.js"></script>
+<script src="js/site-footer.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/header-controls.js"></script>
+<script src="js/bottom-nav.js"></script>
+</body>
+</html>

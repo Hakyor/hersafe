@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin.html
 Disallow: /admin-login.html
 
-Sitemap: https://yourusername.github.io/hersafe/sitemap.xml
+Sitemap: https://hakyor.github.io/hersafe/sitemap.xml

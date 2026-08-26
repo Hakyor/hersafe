@@ -14,31 +14,46 @@ borders (see `EGYPT_BOUNDS` in `js/report.js`, `js/map.js`, and
 
 ## Features
 
+- **Anti-defamation / false-report protection** — every report starts
+  Pending and is only ever shown on a public endpoint (list, map,
+  statistics, alerts, route scoring) after an admin explicitly Approves
+  it; Rejected reports never appear anywhere public. Basic spam/duplicate
+  heuristics flag suspicious submissions for review — they never
+  auto-hide, auto-publish, or auto-judge anything. Evidence links are only
+  ever visible to admins, never publicly. Trust score is documented and
+  labeled everywhere as a moderation-priority signal, never proof.
 - Anonymous incident reporting (no account required)
 - Optional GPS or map-based location picker (Leaflet + OpenStreetMap)
 - Optional Google Drive evidence links (links only — files are never hosted)
-- Community safety map with green/amber/red aggregated markers
-- **Safe Places** — admin-curated police stations, hospitals, pharmacies,
-  and other trusted points, shown on the map with category icons
+- Community safety map with green/amber/red aggregated markers, dated and
+  worded as community reports rather than confirmed facts
+- **Help Places** — community-suggested and admin-approved police
+  stations, hospitals, pharmacies, and other useful points, with an
+  "Is this place still here?" community confirmation check-in
 - **Street Rating System** — anyone can rate a street on lighting, crowd
   level, security presence, camera coverage, transit access, and general
   feeling of safety; ratings roll up into a 0–100 Safety Score
 - **Safer Route planner** — choose shortest vs. safer routing, re-ranked
   using street ratings and recent report density (via OSRM)
-- **Community Alerts** — anonymous, area-level warnings when multiple
-  reports land in the same place in a short window; never exposes report
-  content or identities
+- **Community Alerts** — anonymous, area-level, dated notices when
+  multiple *admin-approved* reports land in the same place in a short
+  window; never exposes report content or identities
 - **"What to do after harassment"** support page — calm, practical
   guidance, FAQs, evidence tips, and privacy advice
+- **Online Safety** guidance — harassment, blackmail/extortion,
+  non-consensual sharing, impersonation, and offline-linked harassment
+- **Community Campaigns** — "Report, don't amplify": admin-managed
+  pointers to a platform's own official report form; never submits
+  anything on a user's behalf or encourages contacting anyone
 - Aggregated statistics (by area, by month, by incident type)
 - Bilingual: Arabic (RTL, default) and English (LTR), switchable,
   JSON-driven — no hardcoded UI strings
 - Light and dark themes
 - Native-app-style mobile navigation: bottom tab bar with a center
   "New Report" FAB and a slide-out drawer for secondary pages
-- Password-protected admin panel: reports (search/filter/status/detail),
-  Safe Places CRUD, street rating moderation, community alerts, and
-  dashboard statistics
+- Password-protected admin panel: reports (search/filter/status/flagged/
+  detail/Approve/Reject), Help Places moderation queue, street rating
+  moderation, community alerts, campaigns CRUD, and dashboard statistics
 - **Optional accounts** — guests can do everything (report, rate streets);
   signing up adds a profile, points, trust score, and badges
 - **Gamification** — points for reports/ratings/verifications, a trust
@@ -185,6 +200,23 @@ votes, notifications, and admin logs:
 ```bash
 wrangler d1 execute hersafe-db --remote --file=./sql/0003_accounts_gamification.sql --config=worker/wrangler.toml
 ```
+
+It also includes `sql/0004_moderation_and_help_places.sql`, adding:
+- Report moderation gating (`flagged`, `flag_reason`, `description_hash` on
+  `reports` — spam/duplicate detection signals only, never auto-hide/publish)
+- Help Place suggestions with a Pending → Approved/Rejected workflow
+  (`review_status`, `submitted_by_account_id`, `ip_hash` on `safe_places`)
+- `place_confirmations` ("Is this place still here?")
+- `campaigns` (admin-managed, always points to a platform's official report form)
+```bash
+wrangler d1 execute hersafe-db --remote --file=./sql/0004_moderation_and_help_places.sql --config=worker/wrangler.toml
+```
+
+**Important:** after this migration, reports and Help Places only appear on
+public endpoints once an admin explicitly approves them (`review_status =
+'verified'` / `'approved'`). If your existing deployment already has
+approved-looking content you want to keep visible, you may need to
+re-approve it once from the admin dashboard after migrating.
 
 ## Configuration reference
 

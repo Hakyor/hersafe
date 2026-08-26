@@ -90,6 +90,14 @@ const TOKEN_TTL_SECONDS = 4 * 60 * 60; // 4 hours
 const SERVICE_COUNTRY = "Egypt";
 const EGYPT_BOUNDS = { minLat: 21.5, maxLat: 31.9, minLng: 24.5, maxLng: 37.0 };
 
+// Anti-defamation / false-report protection: a report is only ever shown
+// on a PUBLIC endpoint (list, map, statistics, alerts, route scoring) once
+// an admin has explicitly approved it. "status = visible" only means
+// "not deleted as spam" — it says nothing about publication. Every public
+// query in this file must use this exact filter; do not query `reports`
+// with just `status = 'visible'` for anything user-facing.
+const PUBLIC_REPORT_FILTER = "status = 'visible' AND review_status = 'verified'";
+
 function isInEgypt(lat, lng) {
   return (
     lat >= EGYPT_BOUNDS.minLat &&
@@ -138,7 +146,7 @@ async function route(request, url, env, ctx) {
     return handleAdminDeleteReport(id, request, env);
   }
 
-  // Safe Places
+  // Safe Places / Help Places
   if (method === "GET" && pathname === "/safe-places") return handleListSafePlaces(request, url, env);
   if (method === "POST" && pathname === "/safe-places") return handleCreateSafePlace(request, env);
   if (method === "PUT" && /^\/safe-places\/\d+$/.test(pathname)) {
@@ -146,6 +154,14 @@ async function route(request, url, env, ctx) {
   }
   if (method === "DELETE" && /^\/safe-places\/\d+$/.test(pathname)) {
     return handleDeleteSafePlace(Number(pathname.split("/").pop()), request, env);
+  }
+  if (method === "GET" && pathname === "/admin/safe-places") return handleAdminListSafePlaces(request, url, env);
+  if (method === "PATCH" && /^\/admin\/safe-places\/\d+\/status$/.test(pathname)) {
+    return handleAdminUpdatePlaceStatus(Number(pathname.split("/")[3]), request, env);
+  }
+  if (method === "POST" && pathname === "/help-places/suggest") return handleSuggestSafePlace(request, env);
+  if (method === "POST" && /^\/help-places\/\d+\/confirm$/.test(pathname)) {
+    return handleConfirmPlace(Number(pathname.split("/")[2]), request, env);
   }
 
   // Street Ratings
@@ -196,6 +212,18 @@ async function route(request, url, env, ctx) {
     return handleMarkNotificationRead(Number(pathname.split("/")[2]), request, env);
   }
 
+  // Community Campaigns ("Report, don't amplify" — informational only,
+  // never submits anything or contacts anyone on a user's behalf)
+  if (method === "GET" && pathname === "/campaigns") return handleListCampaigns(request, env);
+  if (method === "GET" && pathname === "/admin/campaigns") return handleAdminListCampaigns(request, env);
+  if (method === "POST" && pathname === "/admin/campaigns") return handleCreateCampaign(request, env);
+  if (method === "PUT" && /^\/admin\/campaigns\/\d+$/.test(pathname)) {
+    return handleUpdateCampaign(Number(pathname.split("/").pop()), request, env);
+  }
+  if (method === "DELETE" && /^\/admin\/campaigns\/\d+$/.test(pathname)) {
+    return handleDeleteCampaign(Number(pathname.split("/").pop()), request, env);
+  }
+
   return jsonResponse({ error: "Not found" }, 404);
 }
 
@@ -224,9 +252,12 @@ async function handleCreateReport(request, env) {
   const wantsAnonymous = body.anonymous !== false;
   const accountId = user && !wantsAnonymous ? user.accountId : null;
 
+  const descriptionHash = description ? await sha256Hex(description.trim().toLowerCase()) : null;
+  const { flagged, flagReason } = await detectReportFlags(env, { descriptionHash, lat, lng, ipHash, description });
+
   const insert = await env.DB.prepare(
-    `INSERT INTO reports (incident_type, description, latitude, longitude, city, country, incident_date, incident_time, anonymous, ip_hash, account_id)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO reports (incident_type, description, latitude, longitude, city, country, incident_date, incident_time, anonymous, ip_hash, account_id, description_hash, flagged, flag_reason)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   )
     .bind(
       body.incident_type,
@@ -239,7 +270,10 @@ async function handleCreateReport(request, env) {
       body.time || null,
       wantsAnonymous ? 1 : 0,
       ipHash,
-      accountId
+      accountId,
+      descriptionHash,
+      flagged ? 1 : 0,
+      flagReason
     )
     .run();
 
@@ -255,11 +289,49 @@ async function handleCreateReport(request, env) {
       .run();
   }
 
+  // Points are awarded on submission (not on approval) so a signed-in
+  // reporter isn't left wondering why nothing happened; this does NOT
+  // grant public visibility — that still requires admin approval below.
   if (accountId) {
     await awardPoints(env, accountId, POINTS.report, "report", "reports", reportId);
   }
 
-  return jsonResponse({ ok: true, id: reportId }, 201);
+  return jsonResponse({ ok: true, id: reportId, review_status: "pending" }, 201);
+}
+
+// -----------------------------------------------------------------------
+// Basic spam / duplicate / personal-info heuristics. These only ever
+// PRIORITIZE a report for admin review — they never approve, reject, hide,
+// or publish anything automatically, and never affect a reporter's trust
+// score by themselves.
+// -----------------------------------------------------------------------
+const PERSONAL_INFO_RE = /(\+?\d[\d\s-]{7,}\d)|@[a-zA-Z0-9_.]{3,}|(instagram|facebook|twitter|x)\.com\//i;
+
+async function detectReportFlags(env, { descriptionHash, lat, lng, ipHash, description }) {
+  const reasons = [];
+
+  if (descriptionHash && isFiniteNumber(lat) && isFiniteNumber(lng)) {
+    const dup = await env.DB.prepare(
+      `SELECT id FROM reports
+       WHERE description_hash = ? AND ROUND(latitude, 2) = ROUND(?, 2) AND ROUND(longitude, 2) = ROUND(?, 2)
+         AND created_at >= datetime('now', '-7 days')
+       LIMIT 1`
+    )
+      .bind(descriptionHash, lat, lng)
+      .first();
+    if (dup) reasons.push("duplicate_content");
+  }
+
+  const recentCount = await env.DB.prepare(
+    `SELECT COUNT(*) as c FROM reports WHERE ip_hash = ? AND created_at >= datetime('now', '-1 day')`
+  )
+    .bind(ipHash)
+    .first();
+  if (recentCount && recentCount.c >= 3) reasons.push("frequent_submitter");
+
+  if (description && PERSONAL_INFO_RE.test(description)) reasons.push("possible_personal_info");
+
+  return { flagged: reasons.length > 0, flagReason: reasons.length ? reasons.join(",") : null };
 }
 
 function validateReportPayload(body) {
@@ -288,7 +360,7 @@ async function handleListReports(request, url, env) {
   const limit = clampInt(url.searchParams.get("limit"), 1, 50, 20);
   const { results } = await env.DB.prepare(
     `SELECT id, incident_type, city, incident_date, created_at
-     FROM reports WHERE status = 'visible'
+     FROM reports WHERE ${PUBLIC_REPORT_FILTER}
      ORDER BY created_at DESC LIMIT ?`
   )
     .bind(limit)
@@ -308,20 +380,20 @@ async function handleStatistics(request, url, env) {
   const [byArea, byMonth, byType, total] = await Promise.all([
     env.DB.prepare(
       `SELECT city, COUNT(*) as count FROM reports
-       WHERE status = 'visible' AND city IS NOT NULL AND city != ''
+       WHERE ${PUBLIC_REPORT_FILTER} AND city IS NOT NULL AND city != ''
        GROUP BY city ORDER BY count DESC LIMIT 10`
     ).all(),
     env.DB.prepare(
       `SELECT strftime('%Y-%m', created_at) as month, COUNT(*) as count FROM reports
-       WHERE status = 'visible'
+       WHERE ${PUBLIC_REPORT_FILTER}
        GROUP BY month ORDER BY month DESC LIMIT 12`
     ).all(),
     env.DB.prepare(
       `SELECT incident_type, COUNT(*) as count FROM reports
-       WHERE status = 'visible'
+       WHERE ${PUBLIC_REPORT_FILTER}
        GROUP BY incident_type ORDER BY count DESC`
     ).all(),
-    env.DB.prepare(`SELECT COUNT(*) as total FROM reports WHERE status = 'visible'`).first(),
+    env.DB.prepare(`SELECT COUNT(*) as total FROM reports WHERE ${PUBLIC_REPORT_FILTER}`).first(),
   ]);
 
   return jsonResponse({
@@ -334,12 +406,12 @@ async function handleStatistics(request, url, env) {
 
 async function getSummary(env) {
   const [total, areas, countries] = await Promise.all([
-    env.DB.prepare(`SELECT COUNT(*) as c FROM reports WHERE status = 'visible'`).first(),
+    env.DB.prepare(`SELECT COUNT(*) as c FROM reports WHERE ${PUBLIC_REPORT_FILTER}`).first(),
     env.DB.prepare(
-      `SELECT COUNT(DISTINCT city) as c FROM reports WHERE status = 'visible' AND city IS NOT NULL AND city != ''`
+      `SELECT COUNT(DISTINCT city) as c FROM reports WHERE ${PUBLIC_REPORT_FILTER} AND city IS NOT NULL AND city != ''`
     ).first(),
     env.DB.prepare(
-      `SELECT COUNT(DISTINCT country) as c FROM reports WHERE status = 'visible' AND country IS NOT NULL AND country != ''`
+      `SELECT COUNT(DISTINCT country) as c FROM reports WHERE ${PUBLIC_REPORT_FILTER} AND country IS NOT NULL AND country != ''`
     ).first(),
   ]);
   return {
@@ -371,9 +443,10 @@ async function handleMap(request, url, env) {
     SELECT city,
            ROUND(latitude, 2) as latitude,
            ROUND(longitude, 2) as longitude,
-           COUNT(*) as count
+           COUNT(*) as count,
+           MAX(created_at) as last_report_at
     FROM reports
-    WHERE status = 'visible' AND latitude IS NOT NULL AND longitude IS NOT NULL
+    WHERE ${PUBLIC_REPORT_FILTER} AND latitude IS NOT NULL AND longitude IS NOT NULL
     ${typeClause} ${dateClause}
     GROUP BY ROUND(latitude, 2), ROUND(longitude, 2)
   `;
@@ -404,9 +477,9 @@ async function handleAdminLogin(request, env) {
 
 // ---------------------------------------------------------------------
 // Admin: list reports — supports search (description/city) and filters
-// (incident type, review status). Reporter identity is only ever shown
-// for reports the reporter explicitly chose not to submit anonymously;
-// everything else always reads "Anonymous User".
+// (incident type, review status, flagged-only). Reporter identity is only
+// ever shown for reports the reporter explicitly chose not to submit
+// anonymously; everything else always reads "Anonymous User".
 // ---------------------------------------------------------------------
 async function handleAdminReports(request, url, env) {
   await requireAdmin(request, env);
@@ -414,10 +487,11 @@ async function handleAdminReports(request, url, env) {
   const search = (url.searchParams.get("search") || "").trim();
   const typeFilter = url.searchParams.get("type") || "";
   const statusFilter = url.searchParams.get("status") || "";
+  const flaggedOnly = url.searchParams.get("flagged") === "1";
 
   let query = `
     SELECT r.id, r.incident_type, r.city, r.description, r.incident_date, r.incident_time,
-           r.created_at, r.status, r.review_status, r.anonymous,
+           r.created_at, r.status, r.review_status, r.anonymous, r.flagged, r.flag_reason,
            a.name as reporter_name, a.email as reporter_email,
            (SELECT COUNT(*) FROM evidence_links e WHERE e.report_id = r.id) as evidence_count
     FROM reports r
@@ -437,6 +511,9 @@ async function handleAdminReports(request, url, env) {
     query += ` AND r.review_status = ?`;
     binds.push(statusFilter);
   }
+  if (flaggedOnly) {
+    query += ` AND r.flagged = 1`;
+  }
   query += ` ORDER BY r.created_at DESC LIMIT 200`;
 
   const stmt = binds.length ? env.DB.prepare(query).bind(...binds) : env.DB.prepare(query);
@@ -451,7 +528,9 @@ async function handleAdminReports(request, url, env) {
 }
 
 // ---------------------------------------------------------------------
-// Admin: full report detail, including evidence links
+// Admin: full report detail, including evidence links. Evidence is NEVER
+// exposed through any public endpoint — this is the only place it's
+// returned, and it requires a valid admin bearer token.
 // ---------------------------------------------------------------------
 async function handleAdminReportDetail(id, request, env) {
   await requireAdmin(request, env);
@@ -481,6 +560,12 @@ async function handleAdminReportDetail(id, request, env) {
 // ---------------------------------------------------------------------
 // Admin: update a report's review status (pending/reviewed/verified/archived)
 // ---------------------------------------------------------------------
+// Admin: update a report's review status (pending/reviewed/verified/archived).
+// 'verified' = Approved (now shows on every public endpoint).
+// 'archived' = Rejected (never shows publicly; slightly lowers trust if
+//   the reporter chose to be identified — never labels anyone a liar,
+//   just deprioritizes future submissions for review).
+// ---------------------------------------------------------------------
 const REVIEW_STATUSES = new Set(["pending", "reviewed", "verified", "archived"]);
 
 async function handleAdminUpdateReportStatus(id, request, env) {
@@ -488,20 +573,24 @@ async function handleAdminUpdateReportStatus(id, request, env) {
   const body = await safeJson(request);
   if (!REVIEW_STATUSES.has(body.status)) return jsonResponse({ error: "Invalid status." }, 400);
 
-  const report = await env.DB.prepare(`SELECT account_id, anonymous FROM reports WHERE id = ?`).bind(id).first();
+  const report = await env.DB.prepare(`SELECT account_id, anonymous, review_status FROM reports WHERE id = ?`).bind(id).first();
   if (!report) return jsonResponse({ error: "Report not found." }, 404);
 
+  const wasVerified = report.review_status === "verified";
   await env.DB.prepare(`UPDATE reports SET review_status = ? WHERE id = ?`).bind(body.status, id).run();
   await logAdminAction(env, admin.sub, "update_report_status", "reports", id, body.status);
 
-  // Notify + reward the reporter only if they chose to be identified.
+  // Notify + adjust trust only if the reporter chose to be identified.
+  // Points were already awarded at submission time (see handleCreateReport)
+  // — approval intentionally does NOT award points again, and this only
+  // fires once per report (guarded by wasVerified) so toggling a status
+  // back and forth can never repeatedly boost trust either.
   if (report.account_id && !report.anonymous) {
     if (body.status === "reviewed" || body.status === "verified") {
       await notify(env, report.account_id, "report_reviewed", `Your report has been ${body.status}.`);
     }
-    if (body.status === "verified") {
+    if (body.status === "verified" && !wasVerified) {
       await adjustTrust(env, report.account_id, TRUST_DELTA.report_verified);
-      await awardPoints(env, report.account_id, POINTS.report, "report", "reports", id);
     }
     if (body.status === "archived") {
       await adjustTrust(env, report.account_id, TRUST_DELTA.spam_penalty);
@@ -526,27 +615,59 @@ async function handleAdminDeleteReport(id, request, env) {
 }
 
 // =======================================================================
-// Safe Places
+// Safe / Help Places
 // =======================================================================
+// User-facing copy calls these "Help Places" / "Community Points" (never
+// a guarantee of safety) — the underlying table/route names stay as-is
+// to avoid an unnecessary breaking rename of an already-deployed schema.
 const SAFE_PLACE_CATEGORIES = new Set([
   "police", "hospital", "pharmacy", "safe_shop", "university", "security_point", "trusted_place",
 ]);
 
+// Public: only admin-approved, active places, plus a lightweight
+// confirmation summary ("Is this place still here?") for each.
 async function handleListSafePlaces(request, url, env) {
   const category = url.searchParams.get("category") || "";
-  let query = `SELECT id, name, category, description, latitude, longitude, opening_hours, phone_number, image_url, safety_notes
-               FROM safe_places WHERE active = 1`;
+  let query = `
+    SELECT p.id, p.name, p.category, p.description, p.latitude, p.longitude, p.opening_hours,
+           p.phone_number, p.image_url, p.safety_notes, p.updated_at,
+           (SELECT COUNT(*) FROM place_confirmations c WHERE c.place_id = p.id AND c.response = 'yes') as confirm_yes,
+           (SELECT COUNT(*) FROM place_confirmations c WHERE c.place_id = p.id AND c.response = 'no') as confirm_no,
+           (SELECT MAX(created_at) FROM place_confirmations c WHERE c.place_id = p.id) as last_confirmed_at
+    FROM safe_places p
+    WHERE p.active = 1 AND p.review_status = 'approved'
+  `;
   const binds = [];
   if (category && SAFE_PLACE_CATEGORIES.has(category)) {
-    query += ` AND category = ?`;
+    query += ` AND p.category = ?`;
     binds.push(category);
   }
-  query += ` ORDER BY name ASC LIMIT 500`;
+  query += ` ORDER BY p.name ASC LIMIT 500`;
   const stmt = binds.length ? env.DB.prepare(query).bind(...binds) : env.DB.prepare(query);
   const { results } = await stmt.all();
   return jsonResponse(results || []);
 }
 
+// Admin-only: every place regardless of status, for the moderation queue.
+async function handleAdminListSafePlaces(request, url, env) {
+  await requireAdmin(request, env);
+  const statusFilter = url.searchParams.get("status") || "";
+  let query = `SELECT id, name, category, description, latitude, longitude, opening_hours, phone_number,
+                      safety_notes, active, review_status, submitted_by_account_id, created_at
+               FROM safe_places WHERE 1=1`;
+  const binds = [];
+  if (statusFilter) {
+    query += ` AND review_status = ?`;
+    binds.push(statusFilter);
+  }
+  query += ` ORDER BY created_at DESC LIMIT 300`;
+  const stmt = binds.length ? env.DB.prepare(query).bind(...binds) : env.DB.prepare(query);
+  const { results } = await stmt.all();
+  return jsonResponse(results || []);
+}
+
+// Admin: create a place directly (auto-approved — an admin adding it
+// themselves doesn't need to review their own submission).
 async function handleCreateSafePlace(request, env) {
   const admin = await requireAdmin(request, env);
   const body = await safeJson(request);
@@ -554,8 +675,8 @@ async function handleCreateSafePlace(request, env) {
   if (errors.length) return jsonResponse({ error: errors.join(" ") }, 400);
 
   const insert = await env.DB.prepare(
-    `INSERT INTO safe_places (name, category, description, latitude, longitude, opening_hours, phone_number, image_url, safety_notes, created_by)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO safe_places (name, category, description, latitude, longitude, opening_hours, phone_number, image_url, safety_notes, created_by, review_status)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'approved')`
   )
     .bind(
       sanitizeText(body.name).slice(0, 150),
@@ -572,6 +693,70 @@ async function handleCreateSafePlace(request, env) {
     .run();
 
   return jsonResponse({ ok: true, id: insert.meta.last_row_id }, 201);
+}
+
+// Public: "Suggest a Help Place". Always starts Pending — never shown on
+// the public map until an admin approves it.
+async function handleSuggestSafePlace(request, env) {
+  const ip = request.headers.get("CF-Connecting-IP") || "0.0.0.0";
+  const ipHash = await sha256Hex(ip);
+
+  const recentCount = await env.DB.prepare(
+    `SELECT COUNT(*) as c FROM safe_places WHERE ip_hash = ? AND created_at >= datetime('now', '-1 day')`
+  )
+    .bind(ipHash)
+    .first();
+  if (recentCount && recentCount.c >= 5) {
+    return jsonResponse({ error: "Too many suggestions submitted recently. Please try again tomorrow." }, 429);
+  }
+
+  const body = await safeJson(request);
+  const errors = validateSafePlacePayload(body);
+  if (errors.length) return jsonResponse({ error: errors.join(" ") }, 400);
+
+  const user = await getOptionalUser(request, env);
+
+  const insert = await env.DB.prepare(
+    `INSERT INTO safe_places (name, category, description, latitude, longitude, safety_notes, review_status, active, submitted_by_account_id, ip_hash)
+     VALUES (?, ?, ?, ?, ?, ?, 'pending', 0, ?, ?)`
+  )
+    .bind(
+      sanitizeText(body.name).slice(0, 150),
+      body.category,
+      sanitizeText(body.description || "").slice(0, 1000),
+      body.latitude,
+      body.longitude,
+      sanitizeText(body.note || "").slice(0, 500),
+      user ? user.accountId : null,
+      ipHash
+    )
+    .run();
+
+  return jsonResponse({ ok: true, id: insert.meta.last_row_id, review_status: "pending" }, 201);
+}
+
+// Admin: approve / reject / archive a suggested or existing place.
+const PLACE_REVIEW_STATUSES = new Set(["pending", "approved", "rejected", "archived"]);
+
+async function handleAdminUpdatePlaceStatus(id, request, env) {
+  const admin = await requireAdmin(request, env);
+  const body = await safeJson(request);
+  if (!PLACE_REVIEW_STATUSES.has(body.status)) return jsonResponse({ error: "Invalid status." }, 400);
+
+  const place = await env.DB.prepare(`SELECT submitted_by_account_id FROM safe_places WHERE id = ?`).bind(id).first();
+  if (!place) return jsonResponse({ error: "Place not found." }, 404);
+
+  const active = body.status === "approved" ? 1 : 0;
+  await env.DB.prepare(`UPDATE safe_places SET review_status = ?, active = ?, updated_at = datetime('now') WHERE id = ?`)
+    .bind(body.status, active, id)
+    .run();
+  await logAdminAction(env, admin.sub, "update_place_status", "safe_places", id, body.status);
+
+  if (place.submitted_by_account_id && (body.status === "approved" || body.status === "rejected")) {
+    await notify(env, place.submitted_by_account_id, "report_reviewed", `Your suggested place has been ${body.status}.`);
+  }
+
+  return jsonResponse({ ok: true });
 }
 
 async function handleUpdateSafePlace(id, request, env) {
@@ -610,6 +795,55 @@ async function handleDeleteSafePlace(id, request, env) {
   return jsonResponse({ ok: true });
 }
 
+// "Is this place still here?" — community confirmation. One response per
+// submitter (account, or hashed IP for guests) per place per 30 days.
+// If "no" responses clearly outweigh "yes" responses, the place is
+// automatically sent back to Pending for admin re-review — it is never
+// automatically hidden or declared unsafe based on this alone.
+const PLACE_RECHECK_NO_THRESHOLD = 3;
+
+async function handleConfirmPlace(placeId, request, env) {
+  const body = await safeJson(request);
+  if (!["yes", "no"].includes(body.response)) return jsonResponse({ error: "Invalid response." }, 400);
+
+  const place = await env.DB.prepare(`SELECT id, review_status FROM safe_places WHERE id = ?`).bind(placeId).first();
+  if (!place) return jsonResponse({ error: "Place not found." }, 404);
+
+  const user = await getOptionalUser(request, env);
+  const ip = request.headers.get("CF-Connecting-IP") || "0.0.0.0";
+  const ipHash = await sha256Hex(ip);
+
+  const recent = user
+    ? await env.DB.prepare(
+        `SELECT id FROM place_confirmations WHERE place_id = ? AND account_id = ? AND created_at >= datetime('now', '-30 days')`
+      ).bind(placeId, user.accountId).first()
+    : await env.DB.prepare(
+        `SELECT id FROM place_confirmations WHERE place_id = ? AND ip_hash = ? AND account_id IS NULL AND created_at >= datetime('now', '-30 days')`
+      ).bind(placeId, ipHash).first();
+  if (recent) return jsonResponse({ error: "You've already confirmed this place recently." }, 429);
+
+  await env.DB.prepare(`INSERT INTO place_confirmations (place_id, account_id, ip_hash, response) VALUES (?, ?, ?, ?)`)
+    .bind(placeId, user ? user.accountId : null, user ? null : ipHash, body.response)
+    .run();
+
+  const counts = await env.DB.prepare(
+    `SELECT
+       SUM(CASE WHEN response = 'yes' THEN 1 ELSE 0 END) as yes_count,
+       SUM(CASE WHEN response = 'no' THEN 1 ELSE 0 END) as no_count
+     FROM place_confirmations WHERE place_id = ?`
+  )
+    .bind(placeId)
+    .first();
+
+  const noCount = counts.no_count || 0;
+  const yesCount = counts.yes_count || 0;
+  if (noCount >= PLACE_RECHECK_NO_THRESHOLD && noCount > yesCount && place.review_status === "approved") {
+    await env.DB.prepare(`UPDATE safe_places SET review_status = 'pending', active = 0 WHERE id = ?`).bind(placeId).run();
+  }
+
+  return jsonResponse({ ok: true, yes_count: yesCount, no_count: noCount });
+}
+
 function validateSafePlacePayload(body) {
   const errors = [];
   if (!body || typeof body !== "object") return ["Invalid request body."];
@@ -625,6 +859,94 @@ function validateSafePlacePayload(body) {
     errors.push("Image URL must start with http:// or https://.");
   }
   return errors;
+}
+
+// =======================================================================
+// Community Campaigns
+// =======================================================================
+// Campaigns are purely informational pointers to a platform's OWN report
+// form. They never submit anything on a user's behalf, never collect or
+// display who's "accused", and never ask anyone to re-share, download, or
+// redistribute harmful content. Admin-managed only.
+async function handleListCampaigns(request, env) {
+  const { results } = await env.DB.prepare(
+    `SELECT id, title, description, platform, official_report_url, instructions, created_at
+     FROM campaigns WHERE status = 'active' ORDER BY created_at DESC LIMIT 100`
+  ).all();
+  return jsonResponse(results || []);
+}
+
+async function handleAdminListCampaigns(request, env) {
+  await requireAdmin(request, env);
+  const { results } = await env.DB.prepare(
+    `SELECT * FROM campaigns ORDER BY created_at DESC LIMIT 200`
+  ).all();
+  return jsonResponse(results || []);
+}
+
+function validateCampaignPayload(body) {
+  const errors = [];
+  if (!body || typeof body !== "object") return ["Invalid request body."];
+  if (!body.title || typeof body.title !== "string") errors.push("Title is required.");
+  if (!body.description || typeof body.description !== "string") errors.push("Description is required.");
+  if (body.official_report_url && !/^https?:\/\//i.test(body.official_report_url)) {
+    errors.push("Official report link must start with http:// or https://.");
+  }
+  return errors;
+}
+
+async function handleCreateCampaign(request, env) {
+  const admin = await requireAdmin(request, env);
+  const body = await safeJson(request);
+  const errors = validateCampaignPayload(body);
+  if (errors.length) return jsonResponse({ error: errors.join(" ") }, 400);
+
+  const insert = await env.DB.prepare(
+    `INSERT INTO campaigns (title, description, platform, official_report_url, instructions, created_by)
+     VALUES (?, ?, ?, ?, ?, ?)`
+  )
+    .bind(
+      sanitizeText(body.title).slice(0, 150),
+      sanitizeText(body.description).slice(0, 2000),
+      sanitizeText(body.platform || "").slice(0, 80),
+      sanitizeText(body.official_report_url || "").slice(0, 500),
+      sanitizeText(body.instructions || "").slice(0, 2000),
+      admin.id || null
+    )
+    .run();
+
+  return jsonResponse({ ok: true, id: insert.meta.last_row_id }, 201);
+}
+
+async function handleUpdateCampaign(id, request, env) {
+  await requireAdmin(request, env);
+  const body = await safeJson(request);
+  const errors = validateCampaignPayload(body);
+  if (errors.length) return jsonResponse({ error: errors.join(" ") }, 400);
+
+  await env.DB.prepare(
+    `UPDATE campaigns SET title = ?, description = ?, platform = ?, official_report_url = ?, instructions = ?,
+      status = ?, updated_at = datetime('now') WHERE id = ?`
+  )
+    .bind(
+      sanitizeText(body.title).slice(0, 150),
+      sanitizeText(body.description).slice(0, 2000),
+      sanitizeText(body.platform || "").slice(0, 80),
+      sanitizeText(body.official_report_url || "").slice(0, 500),
+      sanitizeText(body.instructions || "").slice(0, 2000),
+      body.status === "archived" ? "archived" : "active",
+      id
+    )
+    .run();
+
+  return jsonResponse({ ok: true });
+}
+
+async function handleDeleteCampaign(id, request, env) {
+  const admin = await requireAdmin(request, env);
+  await env.DB.prepare(`DELETE FROM campaigns WHERE id = ?`).bind(id).run();
+  await logAdminAction(env, admin.sub, "delete_campaign", "campaigns", id, null);
+  return jsonResponse({ ok: true });
 }
 
 // =======================================================================
@@ -793,6 +1115,9 @@ async function handleAdminDeleteStreetRating(id, request, env) {
 // Alerts are computed live from recent report density, grouped by the same
 // rounded-coordinate bucket used on the public map — never from individual
 // report content, and never returned alongside report IDs or descriptions.
+// Only admin-approved (review_status = 'verified') reports count here, so
+// an unreviewed or later-rejected report can never generate a public-facing
+// "pattern" alert on its own.
 const ALERT_WINDOW_DAYS = 7;
 const ALERT_THRESHOLD = 3;
 const ALERT_ELEVATED_THRESHOLD = 6;
@@ -802,9 +1127,10 @@ async function handleCommunityAlerts(request, url, env) {
     `SELECT city,
             ROUND(latitude, 2) as latitude,
             ROUND(longitude, 2) as longitude,
-            COUNT(*) as count
+            COUNT(*) as count,
+            MAX(created_at) as last_report_at
      FROM reports
-     WHERE status = 'visible' AND latitude IS NOT NULL AND longitude IS NOT NULL
+     WHERE ${PUBLIC_REPORT_FILTER} AND latitude IS NOT NULL AND longitude IS NOT NULL
        AND created_at >= datetime('now', ?)
      GROUP BY ROUND(latitude, 2), ROUND(longitude, 2)
      HAVING COUNT(*) >= ?`
@@ -819,6 +1145,7 @@ async function handleCommunityAlerts(request, url, env) {
     city: r.city,
     report_count: r.count,
     window_days: ALERT_WINDOW_DAYS,
+    last_report_at: r.last_report_at,
     severity: r.count >= ALERT_ELEVATED_THRESHOLD ? "elevated" : "notice",
   }));
 
@@ -959,7 +1286,7 @@ async function scoreRouteSafety(route, env) {
 
     const recentReports = await env.DB.prepare(
       `SELECT COUNT(*) as c FROM reports
-       WHERE status = 'visible' AND ROUND(latitude, 2) = ROUND(?, 2) AND ROUND(longitude, 2) = ROUND(?, 2)
+       WHERE ${PUBLIC_REPORT_FILTER} AND ROUND(latitude, 2) = ROUND(?, 2) AND ROUND(longitude, 2) = ROUND(?, 2)
          AND created_at >= datetime('now', '-90 days')`
     )
       .bind(lat, lng)
@@ -979,13 +1306,16 @@ async function scoreRouteSafety(route, env) {
 // =======================================================================
 async function handleAdminDashboardSummary(request, env) {
   await requireAdmin(request, env);
-  const [reports, safePlaces, ratings, alerts, users, anonReports] = await Promise.all([
+  const [reports, safePlaces, ratings, alerts, users, anonReports, pendingReports, flaggedReports, pendingPlaces] = await Promise.all([
     env.DB.prepare(`SELECT COUNT(*) as c FROM reports WHERE status = 'visible'`).first(),
-    env.DB.prepare(`SELECT COUNT(*) as c FROM safe_places WHERE active = 1`).first(),
+    env.DB.prepare(`SELECT COUNT(*) as c FROM safe_places WHERE active = 1 AND review_status = 'approved'`).first(),
     env.DB.prepare(`SELECT COUNT(*) as c FROM street_ratings WHERE status = 'visible'`).first(),
     env.DB.prepare(`SELECT COUNT(*) as c FROM community_alerts`).first(),
     env.DB.prepare(`SELECT COUNT(*) as c FROM accounts`).first(),
     env.DB.prepare(`SELECT COUNT(*) as c FROM reports WHERE status = 'visible' AND (account_id IS NULL OR anonymous = 1)`).first(),
+    env.DB.prepare(`SELECT COUNT(*) as c FROM reports WHERE status = 'visible' AND review_status = 'pending'`).first(),
+    env.DB.prepare(`SELECT COUNT(*) as c FROM reports WHERE status = 'visible' AND flagged = 1 AND review_status != 'archived'`).first(),
+    env.DB.prepare(`SELECT COUNT(*) as c FROM safe_places WHERE review_status = 'pending'`).first(),
   ]);
 
   const { results: riskiest } = await env.DB.prepare(
@@ -1014,6 +1344,9 @@ async function handleAdminDashboardSummary(request, env) {
     // "Guests" aren't individually trackable (no accounts, by design) —
     // this is a proxy count of anonymous/unattributed report submissions.
     total_anonymous_reports: anonReports ? anonReports.c : 0,
+    pending_reports: pendingReports ? pendingReports.c : 0,
+    flagged_reports: flaggedReports ? flaggedReports.c : 0,
+    pending_places: pendingPlaces ? pendingPlaces.c : 0,
     riskiest_streets: scored.slice(0, 5),
     safest_streets: scored.slice(-5).reverse(),
     top_contributors: topContributors || [],
@@ -1323,14 +1656,14 @@ async function handleStreetDetails(request, url, env) {
   const avg = (field) => (rows.length ? Math.round((rows.reduce((s, r) => s + r[field], 0) / rows.length) * 20) : null); // scale 1-5 -> /100
 
   const reportsCount = await env.DB.prepare(
-    `SELECT COUNT(*) as c FROM reports WHERE status = 'visible' AND ROUND(latitude, 2) = ROUND(?, 2) AND ROUND(longitude, 2) = ROUND(?, 2)`
+    `SELECT COUNT(*) as c FROM reports WHERE ${PUBLIC_REPORT_FILTER} AND ROUND(latitude, 2) = ROUND(?, 2) AND ROUND(longitude, 2) = ROUND(?, 2)`
   )
     .bind(lat, lng)
     .first();
 
   const nearbyPlaces = await env.DB.prepare(
     `SELECT name, category, latitude, longitude FROM safe_places
-     WHERE active = 1 AND latitude BETWEEN ? AND ? AND longitude BETWEEN ? AND ?
+     WHERE active = 1 AND review_status = 'approved' AND latitude BETWEEN ? AND ? AND longitude BETWEEN ? AND ?
      LIMIT 10`
   )
     .bind(lat - 0.01, lat + 0.01, lng - 0.01, lng + 0.01)

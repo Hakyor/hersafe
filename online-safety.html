@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Online Safety — HerSafe</title>
+<meta name="description" content="Guidance for online harassment, blackmail, non-consensual sharing, and impersonation." />
+<meta name="theme-color" content="#0e3d37" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="css/themes.css" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="online-safety">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span> HerSafe</a>
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html" data-page="home" data-i18n="nav.home">Home</a></li>
+        <li><a href="report.html" data-page="report" data-i18n="nav.report">Report Incident</a></li>
+        <li><a href="map.html" data-page="map" data-i18n="nav.map">Safety Map</a></li>
+        <li><a href="safety.html" data-page="safety" data-i18n="nav.safety">Safety</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" data-action="toggle-theme" aria-label="Toggle dark mode"><span data-theme-icon>☀️</span></button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="site-nav"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="container section" style="max-width:760px">
+  <div class="section-head">
+    <h1 data-i18n="online_safety.title">Online Safety</h1>
+    <p data-i18n="online_safety.intro">Guidance for harassment that happens online, or that started offline and moved online.</p>
+  </div>
+
+  <div class="card-grid cols-2">
+    <div class="card">
+      <h3 data-i18n="online_safety.harassment_title">Online harassment</h3>
+      <p data-i18n="online_safety.harassment_body">…</p>
+    </div>
+    <div class="card">
+      <h3 data-i18n="online_safety.blackmail_title">Blackmail / extortion</h3>
+      <p data-i18n="online_safety.blackmail_body">…</p>
+    </div>
+    <div class="card">
+      <h3 data-i18n="online_safety.nonconsensual_title">Sharing private content without consent</h3>
+      <p data-i18n="online_safety.nonconsensual_body">…</p>
+    </div>
+    <div class="card">
+      <h3 data-i18n="online_safety.impersonation_title">Fake / impersonation accounts</h3>
+      <p data-i18n="online_safety.impersonation_body">…</p>
+    </div>
+    <div class="card" style="grid-column:1/-1">
+      <h3 data-i18n="online_safety.offline_title">Harassment related to an offline incident</h3>
+      <p data-i18n="online_safety.offline_body">…</p>
+    </div>
+  </div>
+
+  <section class="section" style="padding-block:28px 0">
+    <h2 data-i18n="online_safety.dos_title">What helps</h2>
+    <ul style="padding-inline-start:20px;color:var(--ink-soft);display:flex;flex-direction:column;gap:6px">
+      <li data-i18n="online_safety.do_1">…</li>
+      <li data-i18n="online_safety.do_2">…</li>
+      <li data-i18n="online_safety.do_3">…</li>
+      <li data-i18n="online_safety.do_4">…</li>
+    </ul>
+  </section>
+
+  <section class="section" style="padding-block:0 28px">
+    <h2 data-i18n="online_safety.donts_title">What to avoid</h2>
+    <ul style="padding-inline-start:20px;color:var(--ink-soft);display:flex;flex-direction:column;gap:6px">
+      <li data-i18n="online_safety.dont_1">…</li>
+      <li data-i18n="online_safety.dont_2">…</li>
+      <li data-i18n="online_safety.dont_3">…</li>
+      <li data-i18n="online_safety.dont_4">…</li>
+    </ul>
+  </section>
+
+  <div class="notice notice-warning" data-i18n="support.emergency_note">If you're in immediate danger, contact emergency services first.</div>
+
+  <div class="flex gap-12 wrap" style="margin-top:20px">
+    <a class="btn btn-primary" href="report.html" data-i18n="home.cta_report">Report an incident</a>
+    <a class="btn btn-ghost" href="campaigns.html" data-i18n="nav.campaigns">Campaigns</a>
+    <a class="btn btn-ghost" href="support.html" data-i18n="nav.support">After Harassment</a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p data-i18n="footer.rights">All community data is anonymous and aggregated.</p>
+  </div>
+</footer>
+
+<script src="js/theme.js"></script>
+<script src="js/toast.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/main.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/site-footer.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/header-controls.js"></script>
+<script src="js/bottom-nav.js"></script>
+</body>
+</html>

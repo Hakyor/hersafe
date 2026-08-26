@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Suggest a Help Place — HerSafe</title>
+<meta name="description" content="Suggest a police station, hospital, pharmacy, or other useful help location." />
+<meta name="theme-color" content="#0e3d37" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="css/themes.css" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="suggest-help-place">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span> HerSafe</a>
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html" data-page="home" data-i18n="nav.home">Home</a></li>
+        <li><a href="report.html" data-page="report" data-i18n="nav.report">Report Incident</a></li>
+        <li><a href="map.html" data-page="map" data-i18n="nav.map">Safety Map</a></li>
+        <li><a href="safety.html" data-page="safety" data-i18n="nav.safety">Safety</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" data-action="toggle-theme" aria-label="Toggle dark mode"><span data-theme-icon>☀️</span></button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="site-nav"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="container section">
+  <div id="suggest-form-wrap">
+    <div class="section-head">
+      <h1 data-i18n="safe_places.suggest_new">Suggest a Help Place</h1>
+      <p data-i18n="safe_places.suggest_subtitle">Know a police station, hospital, pharmacy, or other useful help location? Suggest it for the community map.</p>
+    </div>
+
+    <div class="notice" data-i18n="admin.place_moderation_note">User-suggested Help Places start Pending and never appear on the public map until approved.</div>
+
+    <form id="suggest-place-form" novalidate>
+      <div class="field">
+        <label for="place-name" data-i18n="safe_places.field_name">Name</label>
+        <input type="text" id="place-name" name="name" required maxlength="150" />
+      </div>
+
+      <div class="field">
+        <label for="place-category" data-i18n="safe_places.field_category">Category</label>
+        <select id="place-category" name="category" required>
+          <option value="police" data-i18n="categories.police">Police Station</option>
+          <option value="hospital" data-i18n="categories.hospital">Hospital</option>
+          <option value="pharmacy" data-i18n="categories.pharmacy">Pharmacy</option>
+          <option value="safe_shop" data-i18n="categories.safe_shop">Safe Shop</option>
+          <option value="university" data-i18n="categories.university">University</option>
+          <option value="security_point" data-i18n="categories.security_point">Public Security Point</option>
+          <option value="trusted_place" data-i18n="categories.trusted_place">Trusted Public Place</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label data-i18n="safe_places.pick_location">Tap the map to set this place's location</label>
+        <div class="flex gap-8 wrap" style="margin-bottom:10px">
+          <button type="button" class="btn btn-ghost" id="use-gps" data-i18n="report.use_gps">Use my current location</button>
+        </div>
+        <div id="picker-map" class="leaflet-map" role="application" aria-label="Map location picker"></div>
+        <input type="hidden" id="field-lat" />
+        <input type="hidden" id="field-lng" />
+      </div>
+
+      <div class="field">
+        <label for="place-note" data-i18n="safe_places.field_note">Note (optional)</label>
+        <textarea id="place-note" name="note" maxlength="500"></textarea>
+      </div>
+
+      <div id="form-error" class="notice notice-warning" role="alert"></div>
+      <button type="submit" class="btn btn-primary btn-block" data-i18n="common.submit">Submit</button>
+    </form>
+  </div>
+
+  <div id="suggest-success" class="card center" hidden>
+    <h2 data-i18n="safe_places.suggest_new">Suggest a Help Place</h2>
+    <p data-i18n="safe_places.suggest_success">Thanks — an admin will review this shortly. It will appear on the map once approved.</p>
+    <div class="flex gap-8 wrap center" style="justify-content:center">
+      <a class="btn btn-primary" href="safety.html" data-i18n="nav.safety">Safety</a>
+      <button type="button" class="btn btn-ghost" id="suggest-another" data-i18n="report.submit_another">Submit another report</button>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p data-i18n="footer.rights">All community data is anonymous and aggregated.</p>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/toast.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/main.js"></script>
+<script src="js/suggest-help-place.js"></script>
+<script src="js/site-footer.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/header-controls.js"></script>
+<script src="js/bottom-nav.js"></script>
+</body>
+</html>

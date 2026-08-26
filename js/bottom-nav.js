@@ -13,6 +13,10 @@
     map: "map",
     safety: "safety",
     "street-rating": "safety",
+    "street-details": "safety",
+    "suggest-help-place": "safety",
+    "online-safety": "safety",
+    campaigns: "safety",
     "safe-route": "map",
     support: "safety",
     guide: "safety",
@@ -71,10 +75,13 @@
       <a href="map.html" data-i18n="nav.map">Safety Map</a>
       <a href="safety.html" data-i18n="nav.safety">Safety Hub</a>
       <a href="street-rating.html" data-i18n="nav.rate_street">Rate a Street</a>
+      <a href="suggest-help-place.html" data-i18n="nav.suggest_place">Suggest a Help Place</a>
       <a href="statistics.html" data-i18n="nav.statistics">Statistics</a>
       <a href="leaderboard.html" data-i18n="nav.leaderboard">Leaderboard</a>
       <a href="guide.html" data-i18n="nav.guide">Safety Guide</a>
       <a href="support.html" data-i18n="nav.support">After Harassment</a>
+      <a href="online-safety.html" data-i18n="nav.online_safety">Online Safety</a>
+      <a href="campaigns.html" data-i18n="nav.campaigns">Campaigns</a>
       <a href="about.html" data-i18n="nav.about">About</a>
       <a href="contact.html" data-i18n="nav.contact">Contact</a>
       <a href="privacy.html" data-i18n="nav.privacy">Privacy Policy</a>

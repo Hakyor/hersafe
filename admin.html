@@ -28,13 +28,15 @@
 
   <div class="tabs" role="tablist">
     <button class="tab-btn" role="tab" data-tab="reports" aria-selected="true" data-i18n="admin.reports_tab">Reports</button>
-    <button class="tab-btn" role="tab" data-tab="places" aria-selected="false" data-i18n="admin.places_tab">Safe Places</button>
+    <button class="tab-btn" role="tab" data-tab="places" aria-selected="false" data-i18n="admin.places_tab">Help Places</button>
     <button class="tab-btn" role="tab" data-tab="ratings" aria-selected="false" data-i18n="admin.ratings_tab">Street Ratings</button>
     <button class="tab-btn" role="tab" data-tab="alerts" aria-selected="false" data-i18n="admin.alerts_tab">Alerts</button>
+    <button class="tab-btn" role="tab" data-tab="campaigns" aria-selected="false" data-i18n="admin.campaigns_tab">Campaigns</button>
     <button class="tab-btn" role="tab" data-tab="stats" aria-selected="false" data-i18n="admin.stats_tab">Statistics</button>
   </div>
 
   <div data-tab-panel="reports">
+    <div class="notice" data-i18n="admin.moderation_note">New reports start Pending and are never shown publicly until you Approve them. Trust score reflects community activity, not proof that a report is accurate — use it only to help prioritize review.</div>
     <div class="admin-filters">
       <input type="text" id="reports-search" placeholder="Search description or city…" />
       <select id="reports-filter-type">
@@ -54,6 +56,10 @@
         <option value="verified" data-i18n="report_status.verified">Verified</option>
         <option value="archived" data-i18n="report_status.archived">Archived</option>
       </select>
+      <label class="flex gap-8" style="align-items:center">
+        <input type="checkbox" id="reports-filter-flagged" />
+        <span data-i18n="admin.flagged_only">Flagged only</span>
+      </label>
     </div>
     <div class="card table-wrap">
       <table id="admin-reports-table">
@@ -68,8 +74,9 @@
   <div id="report-detail-modal-root"></div>
 
   <div data-tab-panel="places" hidden>
+    <div class="notice" data-i18n="admin.place_moderation_note">User-suggested Help Places start Pending and never appear on the public map until approved.</div>
     <div class="card" style="margin-bottom:16px">
-      <h3 id="place-form-title" data-i18n="safe_places.add_new">Add Safe Place</h3>
+      <h3 id="place-form-title" data-i18n="safe_places.add_new">Add Help Place</h3>
       <form id="place-form" novalidate>
         <input type="hidden" id="place-id" />
         <div class="field"><label for="place-name" data-i18n="safe_places.field_name">Name</label><input type="text" id="place-name" required /></div>
@@ -107,9 +114,18 @@
         </div>
       </form>
     </div>
+    <div class="admin-filters">
+      <select id="places-filter-status">
+        <option value="">All statuses</option>
+        <option value="pending" data-i18n="report_status.pending">Pending</option>
+        <option value="approved" data-i18n="place_status.approved">Approved</option>
+        <option value="rejected" data-i18n="place_status.rejected">Rejected</option>
+        <option value="archived" data-i18n="report_status.archived">Archived</option>
+      </select>
+    </div>
     <div class="card table-wrap">
       <table id="admin-places-table">
-        <thead><tr><th>ID</th><th>Name</th><th>Category</th><th></th></tr></thead>
+        <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Status</th><th></th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
@@ -128,6 +144,39 @@
     <div class="card table-wrap">
       <table id="admin-alerts-table">
         <thead><tr><th>Area</th><th>City</th><th>Reports</th><th>Severity</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div data-tab-panel="campaigns" hidden>
+    <div class="notice" data-i18n="admin.campaigns_note">Campaigns must always point to a platform's official report form and never ask users to contact, confront, or share content about anyone.</div>
+    <div class="card" style="margin-bottom:16px">
+      <h3 id="campaign-form-title" data-i18n="campaigns.add_new">Add Campaign</h3>
+      <form id="campaign-form" novalidate>
+        <input type="hidden" id="campaign-id" />
+        <div class="field"><label for="campaign-title" data-i18n="campaigns.field_title">Title</label><input type="text" id="campaign-title" required /></div>
+        <div class="field"><label for="campaign-description" data-i18n="campaigns.field_description">Description</label><textarea id="campaign-description" required></textarea></div>
+        <div class="field"><label for="campaign-platform" data-i18n="campaigns.field_platform">Platform</label><input type="text" id="campaign-platform" placeholder="e.g. Instagram" /></div>
+        <div class="field"><label for="campaign-url" data-i18n="campaigns.field_url">Official report link</label><input type="url" id="campaign-url" /></div>
+        <div class="field"><label for="campaign-instructions" data-i18n="campaigns.field_instructions">Instructions</label><textarea id="campaign-instructions"></textarea></div>
+        <div class="field">
+          <label for="campaign-status" data-i18n="campaigns.field_status">Status</label>
+          <select id="campaign-status">
+            <option value="active" data-i18n="campaigns.status_active">Active</option>
+            <option value="archived" data-i18n="report_status.archived">Archived</option>
+          </select>
+        </div>
+        <div id="campaign-error" class="notice notice-warning" role="alert"></div>
+        <div class="flex gap-8">
+          <button type="submit" class="btn btn-primary" data-i18n="common.save">Save</button>
+          <button type="button" class="btn btn-ghost" id="campaign-form-reset" data-i18n="common.cancel">Cancel</button>
+        </div>
+      </form>
+    </div>
+    <div class="card table-wrap">
+      <table id="admin-campaigns-table">
+        <thead><tr><th>ID</th><th>Title</th><th>Platform</th><th>Status</th><th></th></tr></thead>
         <tbody></tbody>
       </table>
     </div>

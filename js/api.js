@@ -68,11 +68,15 @@
     updateReportStatus: (id, status) => request(`/admin/report/${id}/status`, { method: "PATCH", body: { status }, auth: true }),
     deleteReport: (id) => request(`/admin/report/${id}`, { method: "DELETE", auth: true }),
 
-    // Safe Places
+    // Safe Places / Help Places
     getSafePlaces: (query = "") => request("/safe-places" + query),
     createSafePlace: (payload) => request("/safe-places", { method: "POST", body: payload, auth: true }),
     updateSafePlace: (id, payload) => request(`/safe-places/${id}`, { method: "PUT", body: payload, auth: true }),
     deleteSafePlace: (id) => request(`/safe-places/${id}`, { method: "DELETE", auth: true }),
+    getAdminSafePlaces: (query = "") => request("/admin/safe-places" + query, { auth: true }),
+    updatePlaceStatus: (id, status) => request(`/admin/safe-places/${id}/status`, { method: "PATCH", body: { status }, auth: true }),
+    suggestHelpPlace: (payload) => request("/help-places/suggest", { method: "POST", body: payload, userAuth: true }),
+    confirmPlace: (id, response) => request(`/help-places/${id}/confirm`, { method: "POST", body: { response }, userAuth: true }),
 
     // Street Ratings
     getStreetRatings: (query = "") => request("/street-ratings" + query),
@@ -115,6 +119,13 @@
     // Notifications
     getNotifications: () => request("/notifications", { userAuth: true }),
     markNotificationRead: (id) => request(`/notifications/${id}/read`, { method: "PATCH", userAuth: true }),
+
+    // Community Campaigns
+    getCampaigns: () => request("/campaigns"),
+    getAdminCampaigns: () => request("/admin/campaigns", { auth: true }),
+    createCampaign: (payload) => request("/admin/campaigns", { method: "POST", body: payload, auth: true }),
+    updateCampaign: (id, payload) => request(`/admin/campaigns/${id}`, { method: "PUT", body: payload, auth: true }),
+    deleteCampaign: (id) => request(`/admin/campaigns/${id}`, { method: "DELETE", auth: true }),
   };
 
   function saveUserSession(data) {
