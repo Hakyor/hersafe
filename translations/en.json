@@ -23,7 +23,11 @@
     "leaderboard": "Leaderboard",
     "online_safety": "Online Safety",
     "campaigns": "Campaigns",
-    "suggest_place": "Suggest a Help Place"
+    "suggest_place": "Suggest a Help Place",
+    "section_explore": "Explore",
+    "section_community": "Community",
+    "section_resources": "Safety Resources",
+    "section_more": "More"
   },
   "home": {
     "hero_eyebrow": "Anonymous. Encrypted intent. Community-owned.",

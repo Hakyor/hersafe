@@ -1,36 +1,51 @@
 /*
-  HerSafe design tokens
+  HerSafe design tokens — v2 visual refresh.
   Signature motif: the "Horizon Arc" — a soft protective arc of light,
-  used behind the hero, as a card corner glow, and as the pulse-ring
-  that marks anonymous / live indicators throughout the product.
+  used behind the hero, as a card corner glow, the header logo mark, and
+  the pulse-ring that marks anonymous / live indicators throughout the
+  product.
+
+  Note: variable names below (--teal-*, --amber-*) are kept for backward
+  compatibility with existing rules in styles.css and JS — only the
+  VALUES changed, to the new maroon / rose / lavender / plum palette.
+  --teal-* now holds the maroon family, --amber-* now holds the rose
+  family. Read --primary / --accent for the semantic meaning; the raw
+  names are legacy plumbing only.
 */
 
 :root {
-  /* Brand */
-  --teal-900: #0e3d37;
-  --teal-700: #145a4f;
-  --teal-600: #1b6e62;
-  --teal-400: #4fa696;
-  --amber-500: #d9a24b;
-  --amber-400: #e8b96f;
+  /* Brand (maroon family — legacy name --teal-*) */
+  --teal-900: #5e1f26;
+  --teal-700: #92333c;
+  --teal-600: #a8434c;
+  --teal-400: #c97a82;
+
+  /* Brand (rose family — legacy name --amber-*) */
+  --amber-500: #e1a49a;
+  --amber-400: #e7b4ab;
+
+  /* Extra brand tones used directly in v2 (lavender + plum) */
+  --lavender: #d2cadf;
+  --lavender-deep: #b8acc9;
+  --plum: #372937;
 
   /* Status (map + severity only, never brand) */
-  --status-safe: #3f9142;
-  --status-caution: #d9a531;
-  --status-risk: #c0392b;
+  --status-safe: #7a9b78;
+  --status-caution: #c9a227;
+  --status-risk: #be4a4f;
 
   /* Light theme */
-  --bg: #faf7f1;
-  --surface: #ffffff;
-  --surface-muted: #f1ece1;
-  --ink: #14231f;
-  --ink-soft: #4a5a55;
-  --border: #e4ddcd;
+  --bg: #f1e4db;
+  --surface: #fffdfb;
+  --surface-muted: #d2cadf;
+  --ink: #372937;
+  --ink-soft: #6e5c6c;
+  --border: #e3d2c4;
   --accent: var(--amber-500);
   --primary: var(--teal-700);
   --primary-ink: #ffffff;
-  --shadow: 0 8px 24px -12px rgba(14, 61, 55, 0.25);
-  --shadow-sm: 0 2px 8px -4px rgba(14, 61, 55, 0.18);
+  --shadow: 0 8px 24px -12px rgba(55, 41, 55, 0.22);
+  --shadow-sm: 0 2px 10px -4px rgba(55, 41, 55, 0.14);
 
   /* Typography */
   --font-display-en: "Fraunces", Georgia, serif;
@@ -39,22 +54,22 @@
   --font-body-ar: "Cairo", Tahoma, sans-serif;
 
   --radius-lg: 22px;
-  --radius-md: 14px;
-  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
 
   color-scheme: light;
 }
 
 [data-theme="dark"] {
-  --bg: #081513;
-  --surface: #0f211d;
-  --surface-muted: #142823;
-  --ink: #edebe3;
-  --ink-soft: #a8b8b2;
-  --border: #1e3833;
+  --bg: #241a24;
+  --surface: #302331;
+  --surface-muted: #3d2d3e;
+  --ink: #f1e4db;
+  --ink-soft: #c8b9c6;
+  --border: #4a374b;
   --accent: var(--amber-400);
   --primary: var(--teal-400);
-  --primary-ink: #06120f;
+  --primary-ink: #241a24;
   --shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.55);
   --shadow-sm: 0 4px 14px -6px rgba(0, 0, 0, 0.45);
   color-scheme: dark;

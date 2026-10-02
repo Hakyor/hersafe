@@ -23,7 +23,11 @@
     "leaderboard": "لوحة المتصدرين",
     "online_safety": "الأمان الرقمي",
     "campaigns": "الحملات",
-    "suggest_place": "اقترحي مكانًا مساعدًا"
+    "suggest_place": "اقترحي مكانًا مساعدًا",
+    "section_explore": "استكشفي",
+    "section_community": "المجتمع",
+    "section_resources": "موارد الأمان",
+    "section_more": "المزيد"
   },
   "home": {
     "hero_eyebrow": "بلا هوية. بلا كشف. ملك المجتمع.",

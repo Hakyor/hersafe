@@ -21,7 +21,7 @@
       ensureButton(
         actions,
         "[data-action='toggle-theme']",
-        `<button class="icon-btn" data-action="toggle-theme" aria-label="Toggle dark mode"><span data-theme-icon>☀️</span></button>`,
+        `<button class="icon-btn" data-action="toggle-theme" aria-label="Toggle dark mode"><span data-theme-icon></span></button>`,
         ".nav-toggle"
       );
       ensureButton(

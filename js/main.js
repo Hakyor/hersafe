@@ -3,20 +3,9 @@
  */
 (function () {
   function initNav() {
-    const toggle = document.querySelector(".nav-toggle");
-    const nav = document.querySelector(".site-nav");
-    if (!toggle || !nav) return;
-    toggle.addEventListener("click", () => {
-      const isOpen = nav.classList.toggle("open");
-      toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    });
-    nav.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => nav.classList.remove("open")));
-
-    const current = document.body.getAttribute("data-page");
-    if (current) {
-      const link = nav.querySelector(`a[data-page="${current}"]`);
-      if (link) link.setAttribute("aria-current", "page");
-    }
+    // Nav building, the header hamburger, current-page highlighting, and
+    // the mobile drawer all now live in js/bottom-nav.js (single source
+    // of truth for navigation on both breakpoints). Nothing to do here.
   }
 
   // Toast function now lives in js/toast.js (loaded on every page) so it's

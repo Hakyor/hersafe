@@ -16,7 +16,8 @@
     document.querySelectorAll("[data-action='toggle-theme']").forEach((btn) => {
       btn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
       const icon = btn.querySelector("[data-theme-icon]");
-      if (icon) icon.textContent = theme === "dark" ? "🌙" : "☀️";
+      // Show the icon of the mode you'd switch TO (moon in light mode, sun in dark mode).
+      if (icon && window.HerSafeIcons) icon.innerHTML = HerSafeIcons.get(theme === "dark" ? "sun" : "moon", 20);
     });
   }
 
@@ -28,6 +29,7 @@
   window.HerSafeTheme = { apply, toggle, detect };
 
   apply(detect());
+  document.addEventListener("DOMContentLoaded", () => apply(document.documentElement.getAttribute("data-theme") || detect()));
 
   // Event delegation: works for buttons injected later (drawer, header
   // chip) regardless of script load order — same reasoning as i18n.js.
